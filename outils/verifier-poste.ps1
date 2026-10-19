@@ -39,6 +39,17 @@ Write-Host ""
 $git = Get-Command git -ErrorAction SilentlyContinue
 Resultat ($null -ne $git) "Git installe ($(if ($git) { (git --version) }))" "Installer Git for Windows, ou utiliser le kit portable : commande /installer dans lapp Claude."
 
+# 1 bis. Identite Git (nom et email des commits). Si elle manque, /demarrer la regle pour le depot.
+if ($git) {
+    $nom = (git config --global user.name) 2>$null
+    $mail = (git config --global user.email) 2>$null
+    if ($nom -and $mail) {
+        Write-Host "[OK] Identite Git : $nom" -ForegroundColor Green
+    } else {
+        Write-Host "[INFO] Identite Git globale absente : /demarrer la reglera pour le depot." -ForegroundColor Cyan
+    }
+}
+
 # 2. Git Bash (shell utilise par Claude Code et par les hooks)
 $bash = @(
     "$env:ProgramFiles\Git\bin\bash.exe",

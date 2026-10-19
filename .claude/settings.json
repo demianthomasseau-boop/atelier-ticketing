@@ -21,7 +21,9 @@
       "Bash(git switch main)",
       "Bash(git pull*)",
       "Bash(rm data/mantis.sqlite)",
-      "Bash(bash outils/pr.sh *)"
+      "Bash(bash outils/pr.sh *)",
+      "Bash(git ls-remote*)",
+      "Bash(git config user.*)"
     ],
     "deny": [
       "Bash(git push origin main*)",

@@ -13,6 +13,7 @@ But : coder les fonctionnalités de `SPECS.md`, une par une, sur la branche du b
 1. Lis le numéro du binôme dans le titre de `SPECS.md`.
 2. Lance `git branch --show-current`.
 3. Si la branche est `main`, lance `git switch -c equipe-XX` dans une commande séparée.
+4. Signe les commits au nom du binôme, pour ce dépôt seulement : `git config user.name "Binôme XX"`. Si `git config user.email` est vide, lance `git config user.email "binome@atelier.local"`.
 
 ## 2. Présenter le plan
 
