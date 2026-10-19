@@ -99,7 +99,7 @@ const ListeTickets = {
           <tbody>
             <tr v-for="t in tickets" :key="t.id" @click="ouvrir(t.id)">
               <td class="text-secondary">#{{ t.id }}</td>
-              <td>{{ t.summary }}</td>
+              <td><a :href="'#/tickets/' + t.id" class="text-reset text-decoration-none">{{ t.summary }}</a></td>
               <td class="small">{{ t.project }}<div class="text-secondary">{{ t.category }}</div></td>
               <td>
                 <span class="badge badge-statut" :style="{ background: couleurStatut(t.status) }">
