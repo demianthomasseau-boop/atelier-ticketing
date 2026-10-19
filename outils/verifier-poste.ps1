@@ -37,7 +37,7 @@ Write-Host ""
 
 # 1. Git
 $git = Get-Command git -ErrorAction SilentlyContinue
-Resultat ($null -ne $git) "Git installe ($(if ($git) { (git --version) }))" "Installer Git for Windows, ou utiliser le kit portable : commande /installer dans lapp Claude."
+Resultat ($null -ne $git) "Git installe ($(if ($git) { (git --version) }))" "Installer Git for Windows, ou utiliser le kit portable : commande /installer dans l'app Claude."
 
 # 1 bis. Identite Git (nom et email des commits). Si elle manque, /demarrer la regle pour le depot.
 if ($git) {
