@@ -31,7 +31,7 @@
       <div v-if="!meta && !erreur" class="text-center text-secondary py-5">
         <div class="spinner-border" role="status"></div>
       </div>
-      <component v-else-if="meta" :is="vue" :params="params"></component>
+      <component v-else-if="meta" :is="vue" :params="params" :key="route"></component>
     </main>
   </div>
 

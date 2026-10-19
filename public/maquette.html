@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maquette – binôme 100</title>
+  <link rel="stylesheet" href="/vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/app.css">
+  <style>
+    .ecran { border: 1px solid var(--bs-border-color); border-radius: .5rem; overflow: hidden; background: var(--bs-tertiary-bg); }
+    .table-tickets tbody tr.survol { background: var(--bs-primary-bg-subtle); }
+  </style>
+</head>
+<body class="bg-body">
+  <div class="container-xl py-4">
+    <h1 class="h3">Maquette – binôme 100</h1>
+    <p class="text-secondary mb-5">
+      Trois écrans pour les techniciens du support. Données fictives. Les pastilles F1, F2, F3 renvoient aux fonctionnalités de SPECS.md.
+    </p>
+
+    <!-- ===================================================================== -->
+    <!-- Écran 1: liste des tickets (existant, modifié)                          -->
+    <!-- ===================================================================== -->
+    <section class="mb-5">
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+        <h2 class="h5 mb-0">1. Liste des tickets</h2>
+        <span class="badge text-bg-secondary">existant</span>
+        <span class="badge text-bg-warning">modifié</span>
+        <code class="ms-2">#/</code>
+        <span class="badge rounded-pill text-bg-primary">F1</span>
+      </div>
+      <p class="small text-secondary mb-2">
+        Seul changement: un clic sur une ligne ouvre la fiche du ticket (<code>#/tickets/2</code>).
+        Données: <code>GET /api/tickets</code>.
+      </p>
+      <div class="ecran">
+        <nav class="navbar navbar-expand bg-dark" data-bs-theme="dark">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="bi bi-ticket-detailed me-2"></i>Ticketing</a>
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item"><a class="nav-link active" href="#"><i class="bi bi-list-ul me-1"></i>Tickets</a></li>
+              <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-speedometer2 me-1"></i>Tableau de bord</a></li>
+            </ul>
+            <span class="navbar-text small"><i class="bi bi-person-circle me-1"></i>Administrateur Atelier</span>
+          </div>
+        </nav>
+        <div class="container-fluid py-4">
+          <div class="d-flex align-items-center mb-3">
+            <h1 class="h4 mb-0">Tickets</h1>
+            <span class="badge text-bg-secondary ms-2">14</span>
+          </div>
+          <div class="card shadow-sm">
+            <div class="table-responsive">
+              <table class="table table-hover table-tickets mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>N°</th><th>Résumé</th><th>Projet</th><th>Statut</th>
+                    <th>Priorité</th><th>Responsable</th><th>Mis à jour</th><th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-secondary">#4</td>
+                    <td>Écran noir au démarrage du poste</td>
+                    <td class="small">Support poste de travail<div class="text-secondary">Matériel</div></td>
+                    <td><span class="badge badge-statut" style="background:#fcbdbd">Nouveau</span></td>
+                    <td class="priorite-50">Urgente</td>
+                    <td>—</td>
+                    <td class="small text-secondary">il y a 2 h</td>
+                    <td class="text-secondary"><i class="bi bi-chevron-right"></i></td>
+                  </tr>
+                  <tr class="survol">
+                    <td class="text-secondary">#2</td>
+                    <td>VPN: déconnexion toutes les 10 minutes <i class="bi bi-cursor-fill text-primary ms-1" title="clic"></i></td>
+                    <td class="small">Réseau et télécoms<div class="text-secondary">VPN</div></td>
+                    <td><span class="badge badge-statut" style="background:#c2dfff">Affecté</span></td>
+                    <td class="priorite-50">Urgente</td>
+                    <td>Alex Bernard</td>
+                    <td class="small text-secondary">il y a 1 j</td>
+                    <td class="text-primary"><i class="bi bi-chevron-right"></i></td>
+                  </tr>
+                  <tr>
+                    <td class="text-secondary">#5</td>
+                    <td>Boîte de messagerie pleine</td>
+                    <td class="small">Applications métier<div class="text-secondary">Messagerie</div></td>
+                    <td><span class="badge badge-statut" style="background:#ffcd85">Accepté</span></td>
+                    <td class="priorite-40">Élevée</td>
+                    <td>Camille Martin</td>
+                    <td class="small text-secondary">il y a 1 j</td>
+                    <td class="text-secondary"><i class="bi bi-chevron-right"></i></td>
+                  </tr>
+                  <tr>
+                    <td class="text-secondary">#8</td>
+                    <td>Téléphone du poste 4127 muet</td>
+                    <td class="small">Réseau et télécoms<div class="text-secondary">Téléphonie</div></td>
+                    <td><span class="badge badge-statut" style="background:#d2f5b0">Résolu</span></td>
+                    <td>Normale</td>
+                    <td>Alex Bernard</td>
+                    <td class="small text-secondary">il y a 3 j</td>
+                    <td class="text-secondary"><i class="bi bi-chevron-right"></i></td>
+                  </tr>
+                  <tr>
+                    <td colspan="8" class="text-center small text-secondary">… 10 autres tickets</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- Écran 2: fiche ticket (nouveau)                                         -->
+    <!-- ===================================================================== -->
+    <section class="mb-5">
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+        <h2 class="h5 mb-0">2. Fiche ticket</h2>
+        <span class="badge text-bg-success">nouveau</span>
+        <code class="ms-2">#/tickets/{id}</code>
+        <span class="badge rounded-pill text-bg-primary">F1</span>
+        <span class="badge rounded-pill text-bg-primary">F2</span>
+      </div>
+      <p class="small text-secondary mb-2">
+        Données: <code>GET /api/tickets/{id}</code>, <code>GET /api/meta</code> (utilisateurs, statuts).
+        Actions: <code>POST /api/tickets/{id}/notes</code> (F1), <code>PATCH /api/tickets/{id}</code> (F2).
+      </p>
+      <div class="ecran">
+        <nav class="navbar navbar-expand bg-dark" data-bs-theme="dark">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="bi bi-ticket-detailed me-2"></i>Ticketing</a>
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item"><a class="nav-link active" href="#"><i class="bi bi-list-ul me-1"></i>Tickets</a></li>
+              <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-speedometer2 me-1"></i>Tableau de bord</a></li>
+            </ul>
+            <span class="navbar-text small"><i class="bi bi-person-circle me-1"></i>Administrateur Atelier</span>
+          </div>
+        </nav>
+        <div class="container-fluid py-4">
+          <a href="#" class="small text-decoration-none"><i class="bi bi-arrow-left me-1"></i>Retour aux tickets</a>
+          <div class="d-flex flex-wrap align-items-center gap-2 mt-2 mb-3">
+            <h1 class="h4 mb-0"><span class="text-secondary">#2</span> VPN: déconnexion toutes les 10 minutes</h1>
+            <span class="badge badge-statut" style="background:#c2dfff">Affecté</span>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-lg-8">
+              <div class="card shadow-sm mb-3">
+                <div class="card-header bg-body d-flex align-items-center">
+                  <span class="fw-semibold">Description</span>
+                  <span class="badge rounded-pill text-bg-primary ms-auto">F1</span>
+                </div>
+                <div class="card-body">
+                  <p class="mb-0">
+                    Depuis la mise à jour du client VPN lundi, la connexion tombe toutes les 10 minutes environ.
+                    Il faut relancer le client à chaque fois. Trois personnes du service comptabilité sont touchées, en télétravail.
+                  </p>
+                </div>
+              </div>
+
+              <div class="card shadow-sm">
+                <div class="card-header bg-body d-flex align-items-center">
+                  <span class="fw-semibold">Notes</span>
+                  <span class="badge text-bg-secondary ms-2">2</span>
+                  <span class="badge rounded-pill text-bg-primary ms-auto">F1</span>
+                </div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">
+                    <div class="small text-secondary mb-1">
+                      <i class="bi bi-person me-1"></i>Jordan Durand · 17/10/2026 08:42
+                    </div>
+                    Ça recommence ce matin, encore deux coupures avant 9 h.
+                  </li>
+                  <li class="list-group-item">
+                    <div class="small text-secondary mb-1">
+                      <i class="bi bi-person me-1"></i>Alex Bernard · 18/10/2026 14:05
+                    </div>
+                    Délai d'inactivité ramené à 5 minutes sur la passerelle. Je teste avec un poste de la compta demain.
+                  </li>
+                </ul>
+                <div class="card-body border-top">
+                  <label for="note" class="form-label small fw-semibold">Ajouter une note</label>
+                  <textarea id="note" class="form-control is-invalid" rows="3" placeholder="Votre note…"></textarea>
+                  <div class="invalid-feedback">La note est vide.</div>
+                  <div class="text-end mt-2">
+                    <button type="button" class="btn btn-primary btn-sm"><i class="bi bi-chat-left-text me-1"></i>Ajouter la note</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="card shadow-sm mb-3">
+                <div class="card-header bg-body d-flex align-items-center">
+                  <span class="fw-semibold">Traitement</span>
+                  <span class="badge rounded-pill text-bg-primary ms-auto">F2</span>
+                </div>
+                <div class="card-body">
+                  <div class="alert alert-success py-2 small"><i class="bi bi-check-circle me-1"></i>Ticket mis à jour.</div>
+                  <label for="responsable" class="form-label small fw-semibold">Responsable</label>
+                  <select id="responsable" class="form-select mb-3">
+                    <option>— Non affecté —</option>
+                    <option>Administrateur Atelier</option>
+                    <option selected>Alex Bernard</option>
+                    <option>Camille Martin</option>
+                    <option>Jordan Durand</option>
+                    <option>Lou Petit</option>
+                    <option>Sacha Moreau</option>
+                  </select>
+                  <label for="statut" class="form-label small fw-semibold">Statut</label>
+                  <select id="statut" class="form-select mb-2">
+                    <option>Nouveau</option>
+                    <option>Commentaire</option>
+                    <option>Accepté</option>
+                    <option>Confirmé</option>
+                    <option selected>Affecté</option>
+                    <option>Résolu</option>
+                    <option>Fermé</option>
+                  </select>
+                  <p class="small text-secondary mb-3">
+                    Un ticket "Nouveau" passe en "Affecté" dès qu'il a un responsable.
+                    En "Résolu", la résolution devient "Corrigé".
+                  </p>
+                  <button type="button" class="btn btn-primary w-100"><i class="bi bi-save me-1"></i>Enregistrer</button>
+                </div>
+              </div>
+
+              <div class="card shadow-sm">
+                <div class="card-header bg-body d-flex align-items-center">
+                  <span class="fw-semibold">Détails</span>
+                  <span class="badge rounded-pill text-bg-primary ms-auto">F1</span>
+                </div>
+                <div class="card-body small">
+                  <dl class="row mb-0">
+                    <dt class="col-5 fw-normal text-secondary">Projet</dt><dd class="col-7">Réseau et télécoms</dd>
+                    <dt class="col-5 fw-normal text-secondary">Catégorie</dt><dd class="col-7">VPN</dd>
+                    <dt class="col-5 fw-normal text-secondary">Priorité</dt><dd class="col-7 priorite-50">Urgente</dd>
+                    <dt class="col-5 fw-normal text-secondary">Sévérité</dt><dd class="col-7">Majeur</dd>
+                    <dt class="col-5 fw-normal text-secondary">Résolution</dt><dd class="col-7">Ouvert</dd>
+                    <dt class="col-5 fw-normal text-secondary">Déclarant</dt><dd class="col-7">Jordan Durand</dd>
+                    <dt class="col-5 fw-normal text-secondary">Créé le</dt><dd class="col-7">16/10/2026 10:18</dd>
+                    <dt class="col-5 fw-normal text-secondary">Mis à jour</dt><dd class="col-7 mb-0">18/10/2026 14:05</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- Écran 3: tableau de bord (nouveau)                                      -->
+    <!-- ===================================================================== -->
+    <section class="mb-5">
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+        <h2 class="h5 mb-0">3. Tableau de bord</h2>
+        <span class="badge text-bg-success">nouveau</span>
+        <code class="ms-2">#/tableau-de-bord</code>
+        <span class="badge rounded-pill text-bg-primary">F3</span>
+      </div>
+      <p class="small text-secondary mb-2">
+        Nouveau lien dans le menu. Données: <code>GET /api/tickets</code> et <code>GET /api/meta</code> (libellés, couleurs).
+        Le comptage se fait dans l'interface.
+      </p>
+      <div class="ecran">
+        <nav class="navbar navbar-expand bg-dark" data-bs-theme="dark">
+          <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="bi bi-ticket-detailed me-2"></i>Ticketing</a>
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-list-ul me-1"></i>Tickets</a></li>
+              <li class="nav-item"><a class="nav-link active" href="#"><i class="bi bi-speedometer2 me-1"></i>Tableau de bord</a></li>
+            </ul>
+            <span class="navbar-text small"><i class="bi bi-person-circle me-1"></i>Administrateur Atelier</span>
+          </div>
+        </nav>
+        <div class="container-fluid py-4">
+          <h1 class="h4 mb-3">Tableau de bord</h1>
+
+          <div class="row g-3 mb-3">
+            <div class="col-sm-6 col-lg-3">
+              <div class="card shadow-sm h-100">
+                <div class="card-body">
+                  <div class="small text-secondary"><i class="bi bi-ticket-detailed me-1"></i>Tickets</div>
+                  <div class="display-6 fw-semibold">14</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="card shadow-sm h-100 border-danger-subtle">
+                <div class="card-body">
+                  <div class="small text-secondary"><i class="bi bi-person-dash me-1"></i>Non affectés</div>
+                  <div class="display-6 fw-semibold text-danger">5</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-lg-4">
+              <div class="card shadow-sm h-100">
+                <div class="card-header bg-body fw-semibold">Par statut</div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span class="badge badge-statut" style="background:#fcbdbd">Nouveau</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-secondary" style="width:29%"></div></div>
+                    <span class="fw-semibold">4</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span class="badge badge-statut" style="background:#e3b7eb">Commentaire</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-secondary" style="width:7%"></div></div>
+                    <span class="fw-semibold">1</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span class="badge badge-statut" style="background:#ffcd85">Accepté</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-secondary" style="width:7%"></div></div>
+                    <span class="fw-semibold">1</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span class="badge badge-statut" style="background:#fff494">Confirmé</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-secondary" style="width:14%"></div></div>
+                    <span class="fw-semibold">2</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span class="badge badge-statut" style="background:#c2dfff">Affecté</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-secondary" style="width:21%"></div></div>
+                    <span class="fw-semibold">3</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span class="badge badge-statut" style="background:#d2f5b0">Résolu</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-secondary" style="width:7%"></div></div>
+                    <span class="fw-semibold">1</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span class="badge badge-statut" style="background:#c9ccc4">Fermé</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-secondary" style="width:14%"></div></div>
+                    <span class="fw-semibold">2</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="card shadow-sm h-100">
+                <div class="card-header bg-body fw-semibold">Par priorité</div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span class="priorite-60" style="width:6rem">Immédiate</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-danger" style="width:7%"></div></div>
+                    <span class="fw-semibold">1</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span class="priorite-50" style="width:6rem">Urgente</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-danger" style="width:21%"></div></div>
+                    <span class="fw-semibold">3</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span class="priorite-40" style="width:6rem">Élevée</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-warning" style="width:14%"></div></div>
+                    <span class="fw-semibold">2</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span style="width:6rem">Normale</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-secondary" style="width:36%"></div></div>
+                    <span class="fw-semibold">5</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span style="width:6rem">Basse</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-secondary" style="width:21%"></div></div>
+                    <span class="fw-semibold">3</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2 text-secondary">
+                    <span style="width:6rem">Aucune</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-secondary" style="width:0%"></div></div>
+                    <span class="fw-semibold">0</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="card shadow-sm h-100">
+                <div class="card-header bg-body fw-semibold">Par responsable</div>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span style="width:8rem"><i class="bi bi-person me-1"></i>Camille Martin</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar" style="width:36%"></div></div>
+                    <span class="fw-semibold">5</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2">
+                    <span style="width:8rem"><i class="bi bi-person me-1"></i>Alex Bernard</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar" style="width:29%"></div></div>
+                    <span class="fw-semibold">4</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-center gap-2 text-danger">
+                    <span style="width:8rem"><i class="bi bi-person-dash me-1"></i>Non affecté</span>
+                    <div class="progress flex-grow-1" style="height:6px"><div class="progress-bar bg-danger" style="width:36%"></div></div>
+                    <span class="fw-semibold">5</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

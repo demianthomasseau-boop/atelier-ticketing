@@ -9,5 +9,7 @@
 .table-tickets td { vertical-align: middle; }
 .table-tickets tbody tr { cursor: pointer; }
 
+.texte-long { white-space: pre-line; }
+
 .priorite-50, .priorite-60 { color: var(--bs-danger); }
 .priorite-40 { color: var(--bs-warning-text-emphasis); }
