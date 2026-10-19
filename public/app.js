@@ -126,16 +126,48 @@ const FicheTicket = {
     const note = ref('');
     const erreurNote = ref('');
     const envoiNote = ref(false);
+    const choix = reactive({ handler_id: null, status: null });
+    const enregistrement = ref(false);
+    const erreurTraitement = ref('');
+    const confirmation = ref('');
+
+    function remplirChoix() {
+      choix.handler_id = ticket.value.handler_id;
+      choix.status = ticket.value.status;
+    }
 
     async function charger() {
       try {
         ticket.value = await api('GET', `/api/tickets/${props.params[0]}`);
+        remplirChoix();
       } catch (e) {
         erreur.value = e.message;
       }
     }
 
-    // La validation (note vide, longueur) est faite par l'API : on affiche son message.
+    const modifie = computed(() => ticket.value !== null
+      && (choix.handler_id !== ticket.value.handler_id || choix.status !== ticket.value.status));
+
+    // Seuls les champs changés partent: l'API applique les règles MantisBT (passage en « Affecté », résolution « Corrigé »).
+    async function enregistrer() {
+      const champs = {};
+      if (choix.handler_id !== ticket.value.handler_id) champs.handler_id = choix.handler_id;
+      if (choix.status !== ticket.value.status) champs.status = choix.status;
+      erreurTraitement.value = '';
+      confirmation.value = '';
+      enregistrement.value = true;
+      try {
+        ticket.value = await api('PATCH', `/api/tickets/${ticket.value.id}`, champs);
+        remplirChoix();
+        confirmation.value = 'Ticket mis à jour.';
+      } catch (e) {
+        erreurTraitement.value = e.message;
+      } finally {
+        enregistrement.value = false;
+      }
+    }
+
+    // La validation (note vide, longueur) est faite par l'API: on affiche son message.
     async function ajouterNote() {
       erreurNote.value = '';
       envoiNote.value = true;
@@ -152,7 +184,13 @@ const FicheTicket = {
 
     onMounted(charger);
 
-    return { ticket, erreur, note, erreurNote, envoiNote, ajouterNote, ...outils };
+    return {
+      ticket, erreur, note, erreurNote, envoiNote, ajouterNote,
+      choix, modifie, enregistrement, erreurTraitement, confirmation, enregistrer,
+      utilisateurs: computed(() => etat.meta.users),
+      statuts: computed(() => etat.meta.enums.status),
+      ...outils,
+    };
   },
   template: `
     <a href="#/" class="small text-decoration-none"><i class="bi bi-arrow-left me-1"></i>Retour aux tickets</a>
@@ -211,6 +249,32 @@ const FicheTicket = {
         </div>
 
         <div class="col-lg-4">
+          <form class="card shadow-sm mb-3" @submit.prevent="enregistrer">
+            <div class="card-header bg-body fw-semibold">Traitement</div>
+            <div class="card-body">
+              <div v-if="confirmation" class="alert alert-success py-2 small">
+                <i class="bi bi-check-circle me-1"></i>{{ confirmation }}
+              </div>
+              <div v-if="erreurTraitement" class="alert alert-danger py-2 small">{{ erreurTraitement }}</div>
+              <label for="responsable" class="form-label small fw-semibold">Responsable</label>
+              <select id="responsable" v-model="choix.handler_id" class="form-select mb-3">
+                <option :value="null">— Non affecté —</option>
+                <option v-for="u in utilisateurs" :key="u.id" :value="u.id">{{ u.realname }}</option>
+              </select>
+              <label for="statut" class="form-label small fw-semibold">Statut</label>
+              <select id="statut" v-model="choix.status" class="form-select mb-2">
+                <option v-for="s in statuts" :key="s.id" :value="s.id">{{ s.label }}</option>
+              </select>
+              <p class="small text-secondary mb-3">
+                Un ticket "Nouveau" passe en "Affecté" dès qu'il a un responsable.
+                En "Résolu", la résolution devient "Corrigé".
+              </p>
+              <button type="submit" class="btn btn-primary w-100" :disabled="!modifie || enregistrement">
+                <i class="bi bi-save me-1"></i>Enregistrer
+              </button>
+            </div>
+          </form>
+
           <div class="card shadow-sm">
             <div class="card-header bg-body fw-semibold">Détails</div>
             <div class="card-body small">
@@ -223,8 +287,6 @@ const FicheTicket = {
                 <dd class="col-7" :class="'priorite-' + ticket.priority">{{ libelle('priority', ticket.priority) }}</dd>
                 <dt class="col-5 fw-normal text-secondary">Sévérité</dt>
                 <dd class="col-7">{{ libelle('severity', ticket.severity) }}</dd>
-                <dt class="col-5 fw-normal text-secondary">Responsable</dt>
-                <dd class="col-7">{{ ticket.handler || '—' }}</dd>
                 <dt class="col-5 fw-normal text-secondary">Résolution</dt>
                 <dd class="col-7">{{ libelle('resolution', ticket.resolution) }}</dd>
                 <dt class="col-5 fw-normal text-secondary">Déclarant</dt>

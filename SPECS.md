@@ -17,9 +17,9 @@ Ils consultent un ticket, l'affectent, le font avancer jusqu'à sa résolution e
 ### F2 – Affectation et changement de statut
 - Besoin: depuis la fiche, le technicien affecte un responsable et fait avancer le statut du ticket.
 - Critères d'acceptation:
-  - [ ] Une liste "Responsable" propose les utilisateurs. Choisir un responsable sur un ticket "Nouveau" le passe en "Affecté".
-  - [ ] Une liste "Statut" propose les 7 statuts MantisBT. Le nouveau statut s'affiche dans la fiche et dans la liste.
-  - [ ] Passer un ticket en "Résolu" affiche la résolution "Corrigé" dans la fiche.
+  - [x] Une liste "Responsable" propose les utilisateurs. Choisir un responsable sur un ticket "Nouveau" le passe en "Affecté".
+  - [x] Une liste "Statut" propose les 7 statuts MantisBT. Le nouveau statut s'affiche dans la fiche et dans la liste.
+  - [x] Passer un ticket en "Résolu" affiche la résolution "Corrigé" dans la fiche.
 - API: existante. `PATCH /api/tickets/{id}` (champs `handler_id`, `status`), `GET /api/meta` (utilisateurs, statuts). L'API applique déjà les règles MantisBT (passage en "Affecté", résolution "Corrigé").
 
 ### F3 – Tableau de bord
