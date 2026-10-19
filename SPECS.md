@@ -25,9 +25,9 @@ Ils consultent un ticket, l'affectent, le font avancer jusqu'à sa résolution e
 ### F3 – Tableau de bord
 - Besoin: le technicien voit d'un coup d'œil la charge du support.
 - Critères d'acceptation:
-  - [ ] Un écran "Tableau de bord", accessible depuis le menu, affiche le nombre de tickets par statut et par priorité.
-  - [ ] Il affiche le nombre de tickets par responsable et le nombre de tickets non affectés. Les totaux correspondent à la liste.
-  - [ ] Après une affectation ou un changement de statut, les compteurs sont à jour au retour sur l'écran.
+  - [x] Un écran "Tableau de bord", accessible depuis le menu, affiche le nombre de tickets par statut et par priorité.
+  - [x] Il affiche le nombre de tickets par responsable et le nombre de tickets non affectés. Les totaux correspondent à la liste.
+  - [x] Après une affectation ou un changement de statut, les compteurs sont à jour au retour sur l'écran.
 - API: existante. `GET /api/tickets` (tous les tickets) et `GET /api/meta` (libellés). Le comptage se fait dans l'interface, sans modification de l'API.
 
 ## Hors périmètre

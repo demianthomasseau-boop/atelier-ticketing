@@ -304,6 +304,141 @@ const FicheTicket = {
   `,
 };
 
+const TableauDeBord = {
+  props: ["params"],
+  setup() {
+    const tickets = ref([]);
+    const chargement = ref(true);
+    const erreur = ref('');
+
+    onMounted(async () => {
+      try {
+        tickets.value = await api('GET', '/api/tickets');
+      } catch (e) {
+        erreur.value = e.message;
+      } finally {
+        chargement.value = false;
+      }
+    });
+
+    const compter = (filtre) => tickets.value.filter(filtre).length;
+
+    const parStatut = computed(() => etat.meta.enums.status
+      .map((s) => ({ ...s, nombre: compter((t) => t.status === s.id) })));
+
+    // De la priorité la plus haute à la plus basse
+    const parPriorite = computed(() => [...etat.meta.enums.priority].reverse()
+      .map((p) => ({ ...p, nombre: compter((t) => t.priority === p.id) })));
+
+    const parResponsable = computed(() => {
+      const comptes = new Map();
+      for (const t of tickets.value) {
+        if (t.handler_id === null) continue;
+        const ligne = comptes.get(t.handler_id) ?? { id: t.handler_id, nom: t.handler, nombre: 0 };
+        ligne.nombre++;
+        comptes.set(t.handler_id, ligne);
+      }
+      return [...comptes.values()].sort((a, b) => b.nombre - a.nombre);
+    });
+
+    const nonAffectes = computed(() => compter((t) => t.handler_id === null));
+
+    function largeur(nombre) {
+      return tickets.value.length ? `${Math.round((nombre * 100) / tickets.value.length)}%` : '0%';
+    }
+
+    function couleurPriorite(id) {
+      if (id >= 50) return 'bg-danger';
+      return id === 40 ? 'bg-warning' : 'bg-secondary';
+    }
+
+    return {
+      tickets, chargement, erreur, parStatut, parPriorite, parResponsable, nonAffectes,
+      largeur, couleurPriorite, ...outils,
+    };
+  },
+  template: `
+    <h1 class="h4 mb-3">Tableau de bord</h1>
+    <div v-if="erreur" class="alert alert-danger">{{ erreur }}</div>
+    <div v-else-if="chargement" class="text-secondary">Chargement…</div>
+    <template v-else>
+      <div class="row g-3 mb-3">
+        <div class="col-sm-6 col-lg-3">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <div class="small text-secondary"><i class="bi bi-ticket-detailed me-1"></i>Tickets</div>
+              <div class="display-6 fw-semibold">{{ tickets.length }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="card shadow-sm h-100 border-danger-subtle">
+            <div class="card-body">
+              <div class="small text-secondary"><i class="bi bi-person-dash me-1"></i>Non affectés</div>
+              <div class="display-6 fw-semibold text-danger">{{ nonAffectes }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-lg-4">
+          <div class="card shadow-sm h-100">
+            <div class="card-header bg-body fw-semibold">Par statut</div>
+            <ul class="list-group list-group-flush">
+              <li v-for="s in parStatut" :key="s.id" class="list-group-item d-flex align-items-center gap-2">
+                <span class="badge badge-statut" :style="{ background: s.color }">{{ s.label }}</span>
+                <div class="progress flex-grow-1 barre-compteur">
+                  <div class="progress-bar bg-secondary" :style="{ width: largeur(s.nombre) }"></div>
+                </div>
+                <span class="fw-semibold">{{ s.nombre }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card shadow-sm h-100">
+            <div class="card-header bg-body fw-semibold">Par priorité</div>
+            <ul class="list-group list-group-flush">
+              <li v-for="p in parPriorite" :key="p.id" class="list-group-item d-flex align-items-center gap-2"
+                  :class="{ 'text-secondary': p.nombre === 0 }">
+                <span class="libelle-compteur" :class="'priorite-' + p.id">{{ p.label }}</span>
+                <div class="progress flex-grow-1 barre-compteur">
+                  <div class="progress-bar" :class="couleurPriorite(p.id)" :style="{ width: largeur(p.nombre) }"></div>
+                </div>
+                <span class="fw-semibold">{{ p.nombre }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="card shadow-sm h-100">
+            <div class="card-header bg-body fw-semibold">Par responsable</div>
+            <ul class="list-group list-group-flush">
+              <li v-for="r in parResponsable" :key="r.id" class="list-group-item d-flex align-items-center gap-2">
+                <span class="libelle-compteur"><i class="bi bi-person me-1"></i>{{ r.nom }}</span>
+                <div class="progress flex-grow-1 barre-compteur">
+                  <div class="progress-bar" :style="{ width: largeur(r.nombre) }"></div>
+                </div>
+                <span class="fw-semibold">{{ r.nombre }}</span>
+              </li>
+              <li class="list-group-item d-flex align-items-center gap-2 text-danger">
+                <span class="libelle-compteur"><i class="bi bi-person-dash me-1"></i>Non affecté</span>
+                <div class="progress flex-grow-1 barre-compteur">
+                  <div class="progress-bar bg-danger" :style="{ width: largeur(nonAffectes) }"></div>
+                </div>
+                <span class="fw-semibold">{{ nonAffectes }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </template>
+  `,
+};
+
 const PageIntrouvable = {
   props: ["params"],
   template: `
@@ -322,11 +457,13 @@ const PageIntrouvable = {
 const ROUTES = [
   { motif: /^#?\/?$/, vue: ListeTickets },
   { motif: /^#\/tickets\/(\d+)$/, vue: FicheTicket },
+  { motif: /^#\/tableau-de-bord$/, vue: TableauDeBord },
 ];
 
 // Liens de la barre de navigation
 const MENU = [
   { href: '#/', label: 'Tickets', icone: 'bi-list-ul' },
+  { href: '#/tableau-de-bord', label: 'Tableau de bord', icone: 'bi-speedometer2' },
 ];
 
 createApp({
@@ -351,9 +488,16 @@ createApp({
       return { vue: PageIntrouvable, params: [] };
     });
 
+    // « Tickets » (#/) reste actif sur la fiche, mais pas quand une autre entrée du menu correspond.
+    function estActif(lien) {
+      if (lien.href !== '#/') return route.value.startsWith(lien.href);
+      return !MENU.some((l) => l.href !== '#/' && route.value.startsWith(l.href));
+    }
+
     return {
       route,
       erreur,
+      estActif,
       menu: MENU,
       meta: computed(() => etat.meta),
       utilisateur: computed(() => etat.meta?.users.find((u) => u.id === 1)),

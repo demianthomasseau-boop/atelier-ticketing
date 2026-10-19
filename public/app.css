@@ -11,5 +11,8 @@
 
 .texte-long { white-space: pre-line; }
 
+.barre-compteur { height: 6px; }
+.libelle-compteur { width: 8rem; }
+
 .priorite-50, .priorite-60 { color: var(--bs-danger); }
 .priorite-40 { color: var(--bs-warning-text-emphasis); }
