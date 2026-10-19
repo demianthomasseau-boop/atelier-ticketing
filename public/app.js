@@ -268,6 +268,7 @@ const FicheTicket = {
               </select>
               <p class="small text-secondary mb-3">
                 Un ticket "Nouveau" passe en "Affecté" dès qu'il a un responsable.
+                Sans responsable, un ticket "Affecté" revient à "Nouveau".
                 En "Résolu", la résolution devient "Corrigé".
               </p>
               <button type="submit" class="btn btn-primary w-100" :disabled="!modifie || enregistrement">

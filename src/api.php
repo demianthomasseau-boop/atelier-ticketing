@@ -236,6 +236,11 @@ function ticket_update(int $id, array $in, int $userId): array
         && !isset($data['status']) && $before['status'] < STATUS_ASSIGNED) {
         $data['status'] = STATUS_ASSIGNED;
     }
+    // Retirer le responsable d'un ticket « Affecté » le remet en « Nouveau ».
+    if (array_key_exists('handler_id', $data) && $data['handler_id'] === null
+        && !isset($data['status']) && $before['status'] === STATUS_ASSIGNED) {
+        $data['status'] = STATUS_NEW;
+    }
     if (isset($data['status'])) {
         $resolution = $data['resolution'] ?? $before['resolution'];
         if ($data['status'] >= STATUS_RESOLVED && $resolution === RESOLUTION_OPEN) {

@@ -72,6 +72,10 @@ verifie('affectation: déclarant refusé (422)', $r['status'] === 422, $r);
 $r = api_handle('PATCH', "/api/tickets/$id", [], ['handler_id' => 2]);
 verifie('affectation : statut « Affecté »', ($r['body']['status'] ?? 0) === STATUS_ASSIGNED, $r);
 
+// Désaffectation: un ticket « Affecté » sans responsable revient à « Nouveau »
+$r = api_handle('PATCH', "/api/tickets/$id", [], ['handler_id' => null]);
+verifie('désaffectation: statut « Nouveau »', ($r['body']['status'] ?? 0) === STATUS_NEW && $r['body']['handler_id'] === null, $r);
+
 // Résolution : passage automatique à « Corrigé »
 $r = api_handle('PATCH', "/api/tickets/$id", [], ['status' => STATUS_RESOLVED]);
 verifie('résolution : « Corrigé »', ($r['body']['resolution'] ?? 0) === RESOLUTION_FIXED, $r);
