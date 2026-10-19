@@ -59,6 +59,7 @@ Si le binôme est en retard, propose de simplifier la fonctionnalité en cours. 
 ## Git
 
 - Ne travaille jamais sur `main`. Crée la branche `equipe-XX` avant la première modification (XX = numéro du binôme).
+- À `/livrer`, la branche prend le nom de l'équipe : `equipe-<nom>`. La pull request part de cette branche.
 - Fais un commit par fonctionnalité terminée. Écris le message en français.
 - Ne pousse jamais vers `main`. Crée la pull request avec `bash outils/pr.sh creer`. Le binôme relit et fusionne sur github.com.
 

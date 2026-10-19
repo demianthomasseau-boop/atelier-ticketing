@@ -36,7 +36,7 @@ Tout est livré dans le dépôt : PHP portable pour Windows, Git portable (plan 
 | 3 | `/maquette` | Produit `public/maquette.html` |
 | 4 | `/construire` | Crée la branche `equipe-XX`, code les fonctionnalités |
 | 5 | `/documenter` | Écrit `DOCUMENTATION.md` |
-| 6 | `/livrer` | Pousse la branche et crée la pull request |
+| 6 | `/livrer <nom d'équipe>` | Renomme la branche au nom de l'équipe, la pousse et crée la pull request |
 | 7 | `/revue` | Relit la branche (conformité, vulnérabilités, secrets, tests) et publie la revue sur la pull request |
 | 8 | `/lancer` | Après la fusion : récupère `main` et lance l'application complète |
 

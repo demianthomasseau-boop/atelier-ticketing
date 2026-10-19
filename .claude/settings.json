@@ -23,7 +23,9 @@
       "Bash(rm data/mantis.sqlite)",
       "Bash(bash outils/pr.sh *)",
       "Bash(git ls-remote*)",
-      "Bash(git config user.*)"
+      "Bash(git config user.*)",
+      "Bash(git branch -m equipe-*)",
+      "Bash(git check-ref-format*)"
     ],
     "deny": [
       "Bash(git push origin main*)",
