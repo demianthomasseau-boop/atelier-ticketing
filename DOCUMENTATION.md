@@ -21,13 +21,15 @@ Un tableau de bord leur montre la charge du support d'un coup d'œil.
 ### F2 – Affectation et changement de statut
 
 1. Ouvrez la fiche d'un ticket.
-2. Dans le bloc "Traitement", choisissez un responsable dans la liste "Responsable", ou "Non affecté".
+2. Dans le bloc "Traitement", choisissez un responsable dans la liste "Responsable", ou "Non affecté". La liste ne propose que les techniciens et les niveaux supérieurs.
 3. Choisissez un statut dans la liste "Statut" (les 7 statuts MantisBT).
 4. Cliquez sur "Enregistrer". Le bouton reste grisé tant que rien n'a changé.
 5. Le message "Ticket mis à jour." confirme l'enregistrement. Le nouveau statut s'affiche dans la fiche et dans la liste.
 
-L'API applique deux règles MantisBT:
+L'API applique ces règles:
+- seul un utilisateur de niveau Technicien ou plus peut être responsable (ajoutée par le binôme);
 - un ticket "Nouveau" qui reçoit un responsable passe en "Affecté";
+- un ticket "Affecté" dont on retire le responsable revient à "Nouveau" (ajoutée par le binôme);
 - un ticket passé en "Résolu" ou "Fermé" avec la résolution "Ouvert" reçoit la résolution "Corrigé".
 
 ### F3 – Tableau de bord
@@ -40,6 +42,7 @@ L'API applique deux règles MantisBT:
 ## API
 
 Aucune route n'a été ajoutée par le binôme. L'interface utilise les routes du socle.
+Les deux règles ajoutées par le binôme (voir F2) s'appliquent à `PATCH /api/tickets/{id}`. Le contrôle du responsable s'applique aussi à `POST /api/tickets`.
 
 | Méthode | Chemin | Rôle | Utilisée par |
 |---|---|---|---|
@@ -71,14 +74,13 @@ Pour revenir aux données de démonstration, supprimez `data/mantis.sqlite`. La 
 | Windows (Git Bash) | `outils/php/php.exe outils/tests/smoke.php` |
 | macOS / Linux | `php outils/tests/smoke.php` |
 
-Résultat attendu: 22 tests réussis. Le binôme n'a ajouté aucune règle métier, donc aucun test.
+Résultat attendu: 24 tests réussis. Le binôme a ajouté deux tests, un par règle métier: déclarant refusé comme responsable, désaffectation vers "Nouveau".
 
 ## Limites connues
 
 - Hors périmètre: filtres et recherche dans la liste, création de ticket, tableau kanban, échéances (SLA), export CSV.
 - Le résumé, la description et la priorité ne se modifient pas depuis la fiche.
 - Pas de connexion: l'utilisateur courant est toujours "Administrateur Atelier".
-- La liste "Responsable" propose tous les utilisateurs actifs, déclarants compris.
 - L'historique du ticket est renvoyé par l'API mais n'est pas affiché.
 - Le tableau de bord compte tous les tickets, fermés compris. Il ne se met pas à jour tout seul: il se recalcule à l'ouverture de l'écran.
-- Ajouter une note recharge la fiche: un choix non enregistré dans "Traitement" est alors perdu.
+- Les routes de modification et de suppression du socle ne contrôlent pas les droits de l'utilisateur.
