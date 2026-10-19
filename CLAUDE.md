@@ -34,6 +34,7 @@ Si le binôme est en retard, propose de simplifier la fonctionnalité en cours. 
 | `db/schema.sql`, `db/seed.sql` | Schéma et données de démonstration |
 | `outils/tests/smoke.php` | Tests de fumée de l'API |
 | `outils/serveur.php` | Lanceur du serveur de développement |
+| `outils/pr.sh` | Crée la pull request et publie la revue, sans la CLI `gh` |
 | `outils/installer.ps1`, `outils/git/` | Kit portable : Git sans droits admin (`/installer`), seulement si Git manque |
 
 ## Commandes
@@ -59,7 +60,7 @@ Si le binôme est en retard, propose de simplifier la fonctionnalité en cours. 
 
 - Ne travaille jamais sur `main`. Crée la branche `equipe-XX` avant la première modification (XX = numéro du binôme).
 - Fais un commit par fonctionnalité terminée. Écris le message en français.
-- Ne pousse jamais vers `main`. La fusion passe par une pull request sur github.com.
+- Ne pousse jamais vers `main`. Crée la pull request avec `bash outils/pr.sh creer`. Le binôme relit et fusionne sur github.com.
 
 ## Jetons
 

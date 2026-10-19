@@ -1,12 +1,12 @@
 ---
 name: livrer
-description: Étape 6 de l'atelier. Vérifie les tests, fait le dernier commit, pousse la branche equipe-XX et donne le lien pour créer la pull request.
+description: Étape 6 de l'atelier. Vérifie les tests, fait le dernier commit, pousse la branche equipe-XX et crée la pull request vers main.
 disable-model-invocation: true
 ---
 
 # Livrer la branche
 
-But : la branche du binôme est sur GitHub, avec une pull request prête à créer.
+But : la pull request du binôme est ouverte sur GitHub, créée par Claude, en 3 minutes.
 
 ## Étapes
 
@@ -15,14 +15,14 @@ But : la branche du binôme est sur GitHub, avec une pull request prête à cré
 3. Lance `git status`. S'il reste des modifications, fais un commit : `git add -A`, puis `git commit -m "<message en français>"`.
 4. Lance `git push -u origin <branche>`.
    - Si Git demande une connexion, explique au binôme qu'une fenêtre du navigateur s'ouvre pour GitHub. Il s'y connecte, puis tu relances la commande.
-5. Lance `git remote get-url origin`. Calcule l'adresse de création de la pull request :
-   `https://github.com/<propriétaire>/<dépôt>/compare/main...<branche>?expand=1`
-   (enlève `.git` à la fin, convertis une adresse `git@github.com:` au format https).
+5. Écris le fichier `.git/pr.md` :
+   - 1re ligne : le titre, `Binôme XX – <fonctionnalités>`.
+   - Lignes suivantes : la description, 10 lignes au maximum. Fonctionnalités, critères d'acceptation atteints, tests, points à vérifier par les relecteurs.
+6. Lance `bash outils/pr.sh creer .git/pr.md`. Le script crée la pull request vers `main` et affiche son adresse.
+   - Si le script signale une erreur, affiche le message exact. Demande au binôme d'appeler l'animateur.
 
 ## Message final au binôme
 
-1. Le lien de création de la pull request.
-2. Un titre proposé : `Binôme XX – <fonctionnalités>`.
-3. Une description à copier, en 8 lignes au maximum : fonctionnalités, critères atteints, tests, captures à ajouter.
-4. La consigne : « Ouvrez le lien, collez le titre et la description, cliquez sur Create pull request. Ne fusionnez pas encore. »
-5. La prochaine étape : taper `/revue`.
+1. L'adresse de la pull request.
+2. La consigne : « Ouvrez le lien pour voir la pull request. Ne fusionnez pas encore. »
+3. La prochaine étape : taper `/revue`.

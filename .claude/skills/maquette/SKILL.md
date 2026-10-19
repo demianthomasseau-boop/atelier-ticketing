@@ -11,7 +11,7 @@ But : le binôme valide ses écrans avant le code, en 5 minutes.
 ## Étapes
 
 1. Lis `SPECS.md`, `public/index.html` et le début de `public/app.js` (constantes `ROUTES` et `MENU`).
-2. Liste les écrans nécessaires. Pour chaque écran, précise :
+2. Le socle a déjà un écran : la liste des tickets (`#/`). Pars de cet écran. Liste les écrans à ajouter ou à modifier. Pour chaque écran, précise :
    - son nom et son adresse (exemple : `#/kanban`).
    - les blocs affichés (tableau, formulaire, colonnes, cartes).
    - les données utilisées et la route d'API.
@@ -19,7 +19,7 @@ But : le binôme valide ses écrans avant le code, en 5 minutes.
    - Reprends la barre de navigation de `public/index.html`.
    - Utilise seulement Bootstrap et Bootstrap Icons, déjà présents dans `public/vendor`.
    - N'ajoute aucun JavaScript. Écris des données fictives réalistes (contexte support informatique).
-   - Affiche les écrans les uns sous les autres, avec un titre pour chacun.
+   - Affiche les écrans les uns sous les autres, avec un titre pour chacun. Marque chaque écran « existant » ou « nouveau ».
 4. Ouvre l'aperçu sur `/maquette.html`.
 5. Demande au binôme : « La maquette vous convient-elle ? » Options : « Oui, on construit », « Ajuster » (une seule série d'ajustements).
 6. Ajoute la section « Écrans » dans `SPECS.md` : un tableau avec l'écran, l'adresse, la fonctionnalité (F1, F2, F3) et la route d'API.

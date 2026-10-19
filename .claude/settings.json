@@ -20,7 +20,8 @@
       "Bash(git push origin equipe-*)",
       "Bash(git switch main)",
       "Bash(git pull*)",
-      "Bash(rm data/mantis.sqlite)"
+      "Bash(rm data/mantis.sqlite)",
+      "Bash(bash outils/pr.sh *)"
     ],
     "deny": [
       "Bash(git push origin main*)",

@@ -84,19 +84,3 @@ jobs:
           if ($LASTEXITCODE -ne 2) { throw 'Le garde-fou ne bloque pas le commit sur main' }
           $global:LASTEXITCODE = 0
 
-  # Diagnostic ponctuel : récupère le runtime Visual C++ du runner (lancement manuel uniquement)
-  runtime-vc:
-    if: github.event_name == 'workflow_dispatch'
-    runs-on: windows-latest
-    steps:
-      - name: Copier vcruntime140.dll
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory runtime | Out-Null
-          Copy-Item C:\Windows\System32\vcruntime140.dll runtime\
-          Copy-Item C:\Windows\System32\vcruntime140_1.dll runtime\ -ErrorAction SilentlyContinue
-          Get-ChildItem runtime | ForEach-Object { "{0} {1} {2}" -f $_.Name, $_.Length, $_.VersionInfo.FileVersion }
-      - uses: actions/upload-artifact@v4
-        with:
-          name: runtime-vc
-          path: runtime

@@ -44,10 +44,15 @@ Affiche :
 Demande au binôme : « Quel constat corriger maintenant ? » Propose les trois premiers constats, plus « Aucun ».
 Corrige un seul constat. Lance les tests. Fais un commit. Lance `git push`.
 
+## 5. Publier la revue
+
+1. Écris le fichier `.git/revue.md` : le rapport de revue en Markdown (tableau des constats, conformité, verdict, correction faite).
+2. Lance `bash outils/pr.sh commenter .git/revue.md`. Le script publie la revue en commentaire de la pull request.
+
 ## Message final au binôme
 
-1. Un résumé de la revue en 5 lignes, à coller en commentaire de la pull request sur GitHub.
-2. La consigne : « Sur GitHub, cliquez sur Merge pull request, puis Confirm merge. »
+1. L'adresse du commentaire publié.
+2. La consigne : « Sur GitHub, relisez la pull request : la description, la revue de Claude et la vérification Windows (coche verte). Si tout est bon, cliquez sur Merge pull request, puis Confirm merge. »
 3. Après la fusion : taper `/lancer` pour récupérer `main` et vérifier l'application complète.
 
 Pour une analyse de sécurité plus poussée, le binôme peut aussi lancer la commande intégrée `/security-review`.
