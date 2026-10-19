@@ -370,8 +370,13 @@ function validate_fields(array $in, bool $creation, ?array $before = null): arra
             $out['handler_id'] = null;
         } else {
             $out['handler_id'] = (int) $in['handler_id'];
-            if (db_one('SELECT id FROM mantis_user_table WHERE id = ? AND enabled = 1', [$out['handler_id']]) === null) {
+            $handler = db_one('SELECT access_level FROM mantis_user_table WHERE id = ? AND enabled = 1', [$out['handler_id']]);
+            if ($handler === null) {
                 throw new ApiError(422, 'Responsable inconnu.');
+            }
+            // Règle MantisBT (handle_bug_threshold): il faut le niveau Technicien pour traiter un ticket.
+            if ((int) $handler['access_level'] < DEVELOPER) {
+                throw new ApiError(422, 'Ce responsable ne peut pas traiter de tickets.');
             }
         }
     }

@@ -64,6 +64,10 @@ $id = $r['body']['id'] ?? 0;
 verifie('création : statut « Nouveau »', ($r['body']['status'] ?? 0) === STATUS_NEW);
 verifie('création : historique NEW_BUG', ($r['body']['history'][0]['type'] ?? -1) == HISTORY_NEW_BUG);
 
+// Affectation: un déclarant (niveau Rapporteur) ne peut pas être responsable
+$r = api_handle('PATCH', "/api/tickets/$id", [], ['handler_id' => 5]);
+verifie('affectation: déclarant refusé (422)', $r['status'] === 422, $r);
+
 // Affectation : passage automatique au statut « Affecté »
 $r = api_handle('PATCH', "/api/tickets/$id", [], ['handler_id' => 2]);
 verifie('affectation : statut « Affecté »', ($r['body']['status'] ?? 0) === STATUS_ASSIGNED, $r);

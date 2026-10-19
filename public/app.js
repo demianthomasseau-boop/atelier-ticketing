@@ -187,7 +187,8 @@ const FicheTicket = {
     return {
       ticket, erreur, note, erreurNote, envoiNote, ajouterNote,
       choix, modifie, enregistrement, erreurTraitement, confirmation, enregistrer,
-      utilisateurs: computed(() => etat.meta.users),
+      // Seuls les techniciens et plus (DEVELOPER = 55 dans MantisBT) peuvent traiter un ticket.
+      utilisateurs: computed(() => etat.meta.users.filter((u) => Number(u.access_level) >= 55)),
       statuts: computed(() => etat.meta.enums.status),
       ...outils,
     };
