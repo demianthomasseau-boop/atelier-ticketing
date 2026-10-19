@@ -174,7 +174,8 @@ const FicheTicket = {
       try {
         await api('POST', `/api/tickets/${ticket.value.id}/notes`, { note: note.value });
         note.value = '';
-        await charger();
+        // Recharge la fiche sans toucher aux choix en cours dans « Traitement ».
+        ticket.value = await api('GET', `/api/tickets/${ticket.value.id}`);
       } catch (e) {
         erreurNote.value = e.message;
       } finally {
