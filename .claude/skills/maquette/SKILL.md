@@ -22,7 +22,7 @@ But : le binôme valide ses écrans avant le code, en 5 minutes.
    - Affiche les écrans les uns sous les autres, avec un titre pour chacun. Marque chaque écran « existant » ou « nouveau ».
 4. Ouvre l'aperçu sur `/maquette.html`.
 5. Demande au binôme : « La maquette vous convient-elle ? » Options : « Oui, on construit », « Ajuster » (une seule série d'ajustements).
-6. Ajoute la section « Écrans » dans `SPECS.md` : un tableau avec l'écran, l'adresse, la fonctionnalité (F1, F2, F3) et la route d'API.
+6. Dans la section « Écrans » de `SPECS.md`, remplace la ligne `<complété par /maquette>` par un tableau : écran, adresse, existant ou nouveau, fonctionnalité (F1, F2, F3), route d'API.
 
 ## Message final
 
