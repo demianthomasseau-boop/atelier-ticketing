@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Maquette – Ticketing</title>
+  <link rel="stylesheet" href="/vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="/vendor/bootstrap-icons/bootstrap-icons.min.css">
+  <style>
+    /* Thème de la mer */
+    :root {
+      --mer-marine: #0b2c4a;
+      --mer-ocean: #0e5a8a;
+      --mer-turquoise: #1fa3b5;
+      --mer-clair: #d9eefa;
+      --mer-ecume: #f4fafd;
+      --mer-sable: #f1e6cf;
+    }
+    body { background: var(--mer-ecume); }
+    .navbar-mer { background: linear-gradient(90deg, var(--mer-marine), var(--mer-ocean)); }
+    .navbar-mer .nav-link.active { color: #fff; border-bottom: 2px solid var(--mer-turquoise); }
+    .titre-ecran { background: var(--mer-marine); color: #fff; border-radius: .5rem; padding: .6rem 1rem; }
+    .titre-ecran small { color: var(--mer-clair); }
+    .badge-etat-existant { background: var(--mer-clair); color: var(--mer-marine); }
+    .badge-etat-nouveau { background: var(--mer-turquoise); color: #fff; }
+    .card { border-color: var(--mer-clair); }
+    .card-header-mer { background: var(--mer-clair); color: var(--mer-marine); font-weight: 600; }
+    .btn-mer { background: var(--mer-ocean); border-color: var(--mer-ocean); color: #fff; }
+    .btn-mer:hover { background: var(--mer-marine); border-color: var(--mer-marine); color: #fff; }
+    .compteur { font-size: 2.4rem; font-weight: 700; color: var(--mer-ocean); line-height: 1; }
+    .badge-statut { color: #212529; font-weight: 500; border: 1px solid rgba(0,0,0,.1); }
+    .kanban { display: grid; grid-template-columns: repeat(7, minmax(170px, 1fr)); gap: .75rem; overflow-x: auto; }
+    .kanban-col { background: var(--mer-clair); border-radius: .5rem; padding: .5rem; min-height: 200px; }
+    .kanban-col h3 { font-size: .85rem; font-weight: 700; color: var(--mer-marine); border-top: 5px solid; padding-top: .35rem; }
+    .kanban-carte { background: #fff; border-radius: .4rem; padding: .5rem .6rem; margin-bottom: .5rem; font-size: .85rem; box-shadow: 0 1px 2px rgba(11,44,74,.15); border-left: 4px solid var(--mer-turquoise); }
+    .barre-prio { height: 1.4rem; border-radius: .3rem; background: var(--mer-turquoise); color: #fff; font-size: .8rem; padding-left: .5rem; line-height: 1.4rem; }
+    .priorite-60, .priorite-50 { color: #b02a37; }
+    .priorite-40 { color: #997404; }
+    .table-tickets td { vertical-align: middle; }
+    .table-tickets thead { background: var(--mer-clair); }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand navbar-mer" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><i class="bi bi-water me-2"></i>Ticketing</a>
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link active" href="#"><i class="bi bi-speedometer2 me-1"></i>Tableau de bord</a></li>
+        <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-kanban me-1"></i>Kanban</a></li>
+        <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-list-ul me-1"></i>Tickets</a></li>
+      </ul>
+      <span class="navbar-text small me-3"><i class="bi bi-person-circle me-1"></i>Directeur</span>
+      <button class="btn btn-outline-light rounded-circle" title="Nouveau ticket" aria-label="Nouveau ticket" style="width:2.4rem;height:2.4rem;padding:0"><i class="bi bi-plus-lg"></i></button>
+    </div>
+  </nav>
+
+  <main class="container-fluid py-4">
+    <div class="alert alert-info small">Maquette statique : aucun JavaScript, données fictives. Le formulaire de création s'ouvre uniquement avec l'icône « + » en haut à droite de la barre de navigation. Les 5 écrans sont présentés les uns sous les autres.</div>
+
+    <!-- ===== Écran 1 : Tableau de bord ===== -->
+    <section class="mb-5">
+      <div class="titre-ecran d-flex align-items-center mb-3">
+        <h2 class="h5 mb-0">1. Tableau de bord <small class="ms-2">#/tableau-de-bord</small></h2>
+        <span class="badge badge-etat-nouveau ms-auto">nouveau · F1</span>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-3">
+          <div class="card shadow-sm h-100">
+            <div class="card-body text-center">
+              <div class="text-secondary small mb-1"><i class="bi bi-ticket-detailed me-1"></i>Tickets au total</div>
+              <div class="compteur">14</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <div class="card shadow-sm h-100">
+            <div class="card-header card-header-mer"><i class="bi bi-bar-chart-fill me-1"></i>Tickets par priorité</div>
+            <div class="card-body">
+              <div class="row align-items-center mb-2"><div class="col-3 col-md-2 small">Immédiate</div><div class="col"><div class="barre-prio" style="width:7%">1</div></div></div>
+              <div class="row align-items-center mb-2"><div class="col-3 col-md-2 small">Urgente</div><div class="col"><div class="barre-prio" style="width:28%">4</div></div></div>
+              <div class="row align-items-center mb-2"><div class="col-3 col-md-2 small">Élevée</div><div class="col"><div class="barre-prio" style="width:14%">2</div></div></div>
+              <div class="row align-items-center mb-2"><div class="col-3 col-md-2 small">Normale</div><div class="col"><div class="barre-prio" style="width:42%">6</div></div></div>
+              <div class="row align-items-center"><div class="col-3 col-md-2 small">Basse</div><div class="col"><div class="barre-prio" style="width:21%">3</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="text-secondary small mt-2 mb-0">Données : <code>GET /api/tickets</code> (comptage dans l'interface) et <code>GET /api/meta</code> (libellés de priorité).</p>
+    </section>
+
+    <!-- ===== Écran 2 : Kanban ===== -->
+    <section class="mb-5">
+      <div class="titre-ecran d-flex align-items-center mb-3">
+        <h2 class="h5 mb-0">2. Kanban par statut <small class="ms-2">#/kanban</small></h2>
+        <span class="badge badge-etat-nouveau ms-auto">nouveau · F2</span>
+      </div>
+      <div class="kanban">
+        <div class="kanban-col"><h3 style="border-color:#fcbdbd">Nouveau <span class="badge text-bg-secondary">3</span></h3>
+          <div class="kanban-carte"><strong>#4</strong> Écran noir au démarrage du poste<div class="priorite-50 small mt-1"><i class="bi bi-exclamation-triangle-fill me-1"></i>Urgente</div></div>
+          <div class="kanban-carte"><strong>#13</strong> Créer une liste de diffusion équipe projet<div class="small text-secondary mt-1">Basse</div></div>
+          <div class="kanban-carte"><strong>#11</strong> Clavier du poste d'accueil défectueux<div class="small text-secondary mt-1">Basse</div></div>
+        </div>
+        <div class="kanban-col"><h3 style="border-color:#e3b7eb">Commentaire <span class="badge text-bg-secondary">1</span></h3>
+          <div class="kanban-carte"><strong>#6</strong> Wi-Fi lent en salle de réunion B<div class="small text-secondary mt-1">Normale</div></div>
+        </div>
+        <div class="kanban-col"><h3 style="border-color:#ffcd85">Accepté <span class="badge text-bg-secondary">1</span></h3>
+          <div class="kanban-carte"><strong>#5</strong> Boîte de messagerie pleine<div class="priorite-40 small mt-1">Élevée</div></div>
+        </div>
+        <div class="kanban-col"><h3 style="border-color:#fff494">Confirmé <span class="badge text-bg-secondary">2</span></h3>
+          <div class="kanban-carte"><strong>#9</strong> GED : recherche sans résultats récents<div class="small text-secondary mt-1">Normale</div></div>
+          <div class="kanban-carte"><strong>#7</strong> Installer le logiciel de cartographie<div class="small text-secondary mt-1">Basse</div></div>
+        </div>
+        <div class="kanban-col"><h3 style="border-color:#c2dfff">Affecté <span class="badge text-bg-secondary">3</span></h3>
+          <div class="kanban-carte"><strong>#12</strong> Bulletins de paie non affichés<div class="priorite-50 small mt-1">Urgente</div></div>
+          <div class="kanban-carte"><strong>#2</strong> VPN : déconnexion toutes les 10 minutes<div class="priorite-50 small mt-1">Urgente</div></div>
+          <div class="kanban-carte"><strong>#1</strong> Imprimante du 2e étage hors ligne<div class="priorite-40 small mt-1">Élevée</div></div>
+        </div>
+        <div class="kanban-col"><h3 style="border-color:#d2f5b0">Résolu <span class="badge text-bg-secondary">1</span></h3>
+          <div class="kanban-carte"><strong>#8</strong> Téléphone du poste 4127 muet<div class="small text-secondary mt-1">Normale</div></div>
+        </div>
+        <div class="kanban-col"><h3 style="border-color:#c9ccc4">Fermé <span class="badge text-bg-secondary">2</span></h3>
+          <div class="kanban-carte"><strong>#10</strong> Compte verrouillé après expiration du mot de passe<div class="priorite-60 small mt-1">Immédiate</div></div>
+          <div class="kanban-carte"><strong>#14</strong> Redémarrages forcés pendant les mises à jour<div class="small text-secondary mt-1">Normale</div></div>
+        </div>
+      </div>
+      <p class="text-secondary small mt-2 mb-0">Données : <code>GET /api/tickets</code> et <code>GET /api/meta</code> (statuts et couleurs). Lecture seule, un clic sur une carte ouvre la fiche (écran 5).</p>
+    </section>
+
+    <!-- ===== Écran 3 : Liste ===== -->
+    <section class="mb-5">
+      <div class="titre-ecran d-flex align-items-center mb-3">
+        <h2 class="h5 mb-0">3. Liste des tickets <small class="ms-2">#/</small></h2>
+        <span class="badge badge-etat-existant ms-auto">existant · repeint aux couleurs de la mer</span>
+      </div>
+      <div class="d-flex align-items-center mb-3">
+        <h3 class="h4 mb-0">Tickets</h3><span class="badge text-bg-secondary ms-2">14</span>
+      </div>
+      <div class="card shadow-sm">
+        <div class="table-responsive">
+          <table class="table table-hover table-tickets mb-0">
+            <thead>
+              <tr><th>N°</th><th>Résumé</th><th>Projet</th><th>Statut</th><th>Priorité</th><th>Responsable</th><th>Mis à jour</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>#4</td><td>Écran noir au démarrage du poste</td><td>Support poste de travail</td><td><span class="badge badge-statut" style="background:#fcbdbd">Nouveau</span></td><td class="priorite-50">Urgente</td><td>—</td><td>il y a 2 h</td></tr>
+              <tr><td>#13</td><td>Créer une liste de diffusion équipe projet</td><td>Applications métier</td><td><span class="badge badge-statut" style="background:#fcbdbd">Nouveau</span></td><td>Basse</td><td>—</td><td>il y a 3 h</td></tr>
+              <tr><td>#12</td><td>Bulletins de paie non affichés</td><td>Applications métier</td><td><span class="badge badge-statut" style="background:#c2dfff">Affecté</span></td><td class="priorite-50">Urgente</td><td>Alex Bernard</td><td>il y a 6 h</td></tr>
+              <tr><td>#5</td><td>Boîte de messagerie pleine</td><td>Applications métier</td><td><span class="badge badge-statut" style="background:#ffcd85">Accepté</span></td><td class="priorite-40">Élevée</td><td>Camille Martin</td><td>il y a 1 j</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="text-secondary small mt-2 mb-0">Données : <code>GET /api/tickets</code>. Inchangé fonctionnellement (extrait de 4 lignes).</p>
+    </section>
+
+    <!-- ===== Écran 4 : Création ===== -->
+    <section class="mb-5">
+      <div class="titre-ecran d-flex align-items-center mb-3">
+        <h2 class="h5 mb-0">4. Nouveau ticket <small class="ms-2">fenêtre ouverte par l'icône « + » en haut à droite</small></h2>
+        <span class="badge badge-etat-nouveau ms-auto">nouveau · F3</span>
+      </div>
+      <div class="row">
+        <div class="col-lg-7">
+          <div class="card shadow-sm">
+            <div class="card-header card-header-mer"><i class="bi bi-plus-circle me-1"></i>Déclarer un incident</div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label">Projet <span class="text-danger">*</span></label>
+                <select class="form-select"><option>Support poste de travail</option><option>Applications métier</option><option>Réseau et télécoms</option></select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Résumé <span class="text-danger">*</span></label>
+                <input class="form-control" value="Imprimante du hall en panne" maxlength="128">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Description <span class="text-danger">*</span></label>
+                <textarea class="form-control" rows="4">L'imprimante du hall d'entrée n'imprime plus depuis ce matin.</textarea>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Priorité</label>
+                  <select class="form-select"><option>Basse</option><option selected>Normale</option><option>Élevée</option><option>Urgente</option><option>Immédiate</option></select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Catégorie</label>
+                  <select class="form-select"><option>Matériel</option><option>Logiciel</option></select>
+                </div>
+              </div>
+              <div class="alert alert-danger py-2 small"><i class="bi bi-exclamation-circle me-1"></i>Exemple d'erreur : « La description est obligatoire. »</div>
+              <button class="btn btn-mer"><i class="bi bi-send me-1"></i>Créer le ticket</button>
+              <button class="btn btn-outline-secondary ms-1">Annuler</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="text-secondary small mt-2 mb-0">Données : <code>POST /api/tickets</code> (projet, résumé, description obligatoires) et <code>GET /api/meta</code> pour les listes. Pas d'entrée dans le menu : la fenêtre s'ouvre avec l'icône « + » (visible sur tous les écrans) et se ferme après l'envoi.</p>
+    </section>
+
+    <!-- ===== Écran 5 : Fiche ===== -->
+    <section class="mb-5">
+      <div class="titre-ecran d-flex align-items-center mb-3">
+        <h2 class="h5 mb-0">5. Fiche ticket (lecture seule) <small class="ms-2">#/ticket/4</small></h2>
+        <span class="badge badge-etat-nouveau ms-auto">nouveau · F2</span>
+      </div>
+      <div class="card shadow-sm">
+        <div class="card-header card-header-mer d-flex align-items-center">
+          <span>#4 · Écran noir au démarrage du poste</span>
+          <span class="badge badge-statut ms-auto" style="background:#fcbdbd">Nouveau</span>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3 small">
+            <div class="col-md-3"><div class="text-secondary">Projet</div>Support poste de travail</div>
+            <div class="col-md-3"><div class="text-secondary">Priorité</div><span class="priorite-50">Urgente</span></div>
+            <div class="col-md-3"><div class="text-secondary">Responsable</div>—</div>
+            <div class="col-md-3"><div class="text-secondary">Mis à jour</div>il y a 2 h</div>
+          </div>
+          <div class="text-secondary small">Description</div>
+          <p class="mb-3">Le poste de la comptabilité reste sur un écran noir après le démarrage.</p>
+          <a class="btn btn-sm btn-outline-secondary" href="#"><i class="bi bi-arrow-left me-1"></i>Retour au kanban</a>
+        </div>
+      </div>
+      <p class="text-secondary small mt-2 mb-0">Données : <code>GET /api/tickets/{id}</code>. Version minimale : notes et modification restent hors périmètre.</p>
+    </section>
+  </main>
+</body>
+</html>

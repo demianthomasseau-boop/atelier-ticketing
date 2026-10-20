@@ -11,3 +11,44 @@
 
 .priorite-50, .priorite-60 { color: var(--bs-danger); }
 .priorite-40 { color: var(--bs-warning-text-emphasis); }
+
+/* Thème de la mer */
+:root {
+  --mer-marine: #0b2c4a;
+  --mer-ocean: #0e5a8a;
+  --mer-turquoise: #1fa3b5;
+  --mer-clair: #d9eefa;
+  --mer-ecume: #f4fafd;
+  --mer-sable: #f1e6cf;
+  --bs-body-bg: var(--mer-ecume);
+  --bs-tertiary-bg: var(--mer-ecume);
+}
+body.bg-body-tertiary { background: var(--mer-ecume) !important; }
+.navbar-mer { background: linear-gradient(90deg, var(--mer-marine), var(--mer-ocean)); }
+.navbar-mer .nav-link.active { color: #fff; border-bottom: 2px solid var(--mer-turquoise); }
+.card { border-color: var(--mer-clair); }
+.card-header-mer { background: var(--mer-clair); color: var(--mer-marine); font-weight: 600; }
+.table-tickets thead, .table-tickets thead th { background: var(--mer-clair); color: var(--mer-marine); }
+.btn-mer { background: var(--mer-ocean); border-color: var(--mer-ocean); color: #fff; }
+.btn-mer:hover { background: var(--mer-marine); border-color: var(--mer-marine); color: #fff; }
+
+/* Tableau de bord */
+.compteur { font-size: 2.4rem; font-weight: 700; color: var(--mer-ocean); line-height: 1; }
+.barre-prio { height: 1.4rem; border-radius: .3rem; background: var(--mer-turquoise); color: #fff; font-size: .8rem; padding-left: .5rem; line-height: 1.4rem; }
+
+/* Kanban */
+.kanban { display: grid; grid-template-columns: repeat(7, minmax(170px, 1fr)); gap: .75rem; overflow-x: auto; }
+.kanban-col { background: var(--mer-clair); border-radius: .5rem; padding: .5rem; min-height: 200px; }
+.kanban-col h2 { font-size: .85rem; font-weight: 700; color: var(--mer-marine); border-top: 5px solid; padding-top: .35rem; }
+.kanban-carte { background: #fff; border-radius: .4rem; padding: .5rem .6rem; margin-bottom: .5rem; font-size: .85rem; box-shadow: 0 1px 2px rgba(11, 44, 74, .15); border-left: 4px solid var(--mer-turquoise); }
+.kanban-carte:hover { box-shadow: 0 2px 6px rgba(11, 44, 74, .3); }
+
+/* Bouton « + » (nouveau ticket) */
+.btn-nouveau { width: 2.4rem; height: 2.4rem; padding: 0; }
+
+/* Éléments cliquables : tableau de bord, en-têtes de tri */
+.carte-lien { transition: box-shadow .15s; }
+.carte-lien:hover { box-shadow: 0 .4rem .9rem rgba(11, 44, 74, .25) !important; }
+.ligne-lien:hover { background: var(--mer-clair); border-radius: .3rem; }
+.th-tri { cursor: pointer; user-select: none; white-space: nowrap; }
+.th-tri:hover { background: #bfe0f3; }
