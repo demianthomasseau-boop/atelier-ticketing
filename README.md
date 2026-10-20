@@ -1,6 +1,6 @@
 # Atelier ticketing – socle Mantis-lite
 
-Socle de départ d'un atelier de vibe coding avec Claude Code.
+Socle de départ d'un atelier d'Agentic Engineering avec Claude Code.
 Chaque binôme part de ce dépôt et construit son propre outil de ticketing.
 
 ## Ce que contient le socle

@@ -2,7 +2,7 @@
 
 ## Contexte
 
-Atelier de vibe coding. Un binôme construit un outil de ticketing en 80 minutes.
+Atelier d'Agentic Engineering. Un binôme construit un outil de ticketing en 80 minutes.
 Le socle fournit la base de données et l'API. Le binôme construit surtout l'interface.
 Le modèle de données reprend celui de MantisBT (tables `mantis_*`, codes de statut, priorité, sévérité).
 
