@@ -30,7 +30,8 @@ async function api(methode, chemin, corps) {
 // ---------------------------------------------------------------------------
 
 // Métadonnées chargées une fois : listes de valeurs MantisBT, projets, catégories, utilisateurs
-const etat = reactive({ meta: null });
+// creationOuverte : fenêtre « Nouveau ticket » ; version : incrémentée après une création pour recharger l'écran affiché
+const etat = reactive({ meta: null, creationOuverte: false, version: 0 });
 
 const outils = {
   libelle(liste, id) {
@@ -251,6 +252,99 @@ const FicheTicket = {
   `,
 };
 
+// Fenêtre de création, ouverte uniquement par l'icône « + » de la barre de navigation
+const FormulaireCreation = {
+  setup() {
+    const champs = reactive({ project_id: '', summary: '', description: '', priority: 30, category_id: '' });
+    const erreur = ref('');
+    const envoi = ref(false);
+
+    const categories = computed(() => (etat.meta?.categories ?? []).filter((c) => c.project_id === Number(champs.project_id)));
+
+    function fermer() {
+      etat.creationOuverte = false;
+    }
+
+    async function envoyer() {
+      erreur.value = '';
+      envoi.value = true;
+      // Les champs vides sont omis : l'API renvoie alors son message d'erreur en français
+      const corps = { priority: Number(champs.priority), summary: champs.summary, description: champs.description };
+      if (champs.project_id !== '') corps.project_id = Number(champs.project_id);
+      if (champs.category_id !== '') corps.category_id = Number(champs.category_id);
+      try {
+        await api('POST', '/api/tickets', corps);
+        etat.version++;
+        fermer();
+        location.hash = '#/';
+      } catch (e) {
+        erreur.value = e.message;
+      } finally {
+        envoi.value = false;
+      }
+    }
+
+    // Changer de projet réinitialise la catégorie, qui dépend du projet
+    function changerProjet() {
+      champs.category_id = '';
+    }
+
+    return { champs, erreur, envoi, categories, fermer, envoyer, changerProjet, meta: computed(() => etat.meta) };
+  },
+  template: `
+    <div class="modal d-block" tabindex="-1" role="dialog" aria-modal="true" @keydown.esc="fermer">
+      <div class="modal-dialog modal-lg">
+        <form class="modal-content" novalidate @submit.prevent="envoyer">
+          <div class="modal-header card-header-mer">
+            <h2 class="modal-title h5"><i class="bi bi-plus-circle me-1"></i>Nouveau ticket</h2>
+            <button type="button" class="btn-close" aria-label="Fermer" @click="fermer"></button>
+          </div>
+          <div class="modal-body">
+            <div v-if="erreur" class="alert alert-danger py-2 small" role="alert">
+              <i class="bi bi-exclamation-circle me-1"></i>{{ erreur }}
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="champ-projet">Projet <span class="text-danger">*</span></label>
+              <select id="champ-projet" class="form-select" v-model="champs.project_id" @change="changerProjet">
+                <option value="">— Choisir un projet —</option>
+                <option v-for="p in meta.projects" :key="p.id" :value="p.id">{{ p.name }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="champ-resume">Résumé <span class="text-danger">*</span></label>
+              <input id="champ-resume" class="form-control" v-model="champs.summary" maxlength="128">
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="champ-description">Description <span class="text-danger">*</span></label>
+              <textarea id="champ-description" class="form-control" rows="4" v-model="champs.description"></textarea>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="champ-priorite">Priorité</label>
+                <select id="champ-priorite" class="form-select" v-model="champs.priority">
+                  <option v-for="p in meta.enums.priority.filter((e) => e.id !== 10)" :key="p.id" :value="p.id">{{ p.label }}</option>
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="champ-categorie">Catégorie</label>
+                <select id="champ-categorie" class="form-select" v-model="champs.category_id" :disabled="!categories.length">
+                  <option value="">— Aucune —</option>
+                  <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" @click="fermer">Annuler</button>
+            <button type="submit" class="btn btn-mer" :disabled="envoi"><i class="bi bi-send me-1"></i>Créer le ticket</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="modal-backdrop show"></div>
+  `,
+};
+
 const PageIntrouvable = {
   props: ["params"],
   template: `
@@ -308,8 +402,11 @@ createApp({
       menu: MENU,
       meta: computed(() => etat.meta),
       utilisateur: computed(() => etat.meta?.users.find((u) => u.id === 1)),
+      creationOuverte: computed(() => etat.creationOuverte),
+      version: computed(() => etat.version),
+      ouvrirCreation: () => { etat.creationOuverte = true; },
       vue: computed(() => correspondance.value.vue),
       params: computed(() => correspondance.value.params),
     };
   },
-}).mount('#app');
+}).component('formulaire-creation', FormulaireCreation).mount('#app');

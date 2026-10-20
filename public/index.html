@@ -20,9 +20,13 @@
             </a>
           </li>
         </ul>
-        <span class="navbar-text small" v-if="utilisateur">
+        <span class="navbar-text small me-3" v-if="utilisateur">
           <i class="bi bi-person-circle me-1"></i>{{ utilisateur.realname }}
         </span>
+        <button type="button" class="btn btn-outline-light rounded-circle btn-nouveau" title="Nouveau ticket"
+                aria-label="Nouveau ticket" :disabled="!meta" @click="ouvrirCreation">
+          <i class="bi bi-plus-lg"></i>
+        </button>
       </div>
     </nav>
 
@@ -31,8 +35,9 @@
       <div v-if="!meta && !erreur" class="text-center text-secondary py-5">
         <div class="spinner-border" role="status"></div>
       </div>
-      <component v-else-if="meta" :is="vue" :params="params"></component>
+      <component v-else-if="meta" :is="vue" :params="params" :key="route + '/' + version"></component>
     </main>
+    <formulaire-creation v-if="creationOuverte && meta"></formulaire-creation>
   </div>
 
   <script src="/vendor/vue/vue.global.prod.js"></script>

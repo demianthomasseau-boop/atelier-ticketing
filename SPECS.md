@@ -10,7 +10,7 @@ L'outil est destiné à un directeur qui veut suivre l'activité des tickets d'u
 - Critères d'acceptation :
   - [x] Un compteur affiche le nombre total de tickets (14 avec les données de démo).
   - [x] Un bloc affiche le nombre de tickets pour chaque priorité (Basse, Normale, Élevée, Urgente, Immédiate).
-  - [ ] Après la création d'un ticket, les compteurs se mettent à jour.
+  - [x] Après la création d'un ticket, les compteurs se mettent à jour.
 - API : API existante, `GET /api/tickets` (le comptage par priorité se fait côté interface) et `GET /api/meta` pour les libellés de priorité.
 
 ### F2 – Tableau kanban par statut
@@ -24,9 +24,9 @@ L'outil est destiné à un directeur qui veut suivre l'activité des tickets d'u
 ### F3 – Création de ticket (formulaire)
 - Besoin : déclarer un nouvel incident depuis un formulaire.
 - Critères d'acceptation :
-  - [ ] Le formulaire s'ouvre uniquement en cliquant sur l'icône « + » en haut à droite de la barre de navigation (aucun lien dans le menu), et refuse l'envoi si le projet, le résumé ou la description manque (message d'erreur en français).
-  - [ ] Après l'envoi, le ticket apparaît dans la liste avec le statut « Nouveau ».
-  - [ ] Le ticket créé apparaît dans la colonne « Nouveau » du kanban.
+  - [x] Le formulaire s'ouvre uniquement en cliquant sur l'icône « + » en haut à droite de la barre de navigation (aucun lien dans le menu), et refuse l'envoi si le projet, le résumé ou la description manque (message d'erreur en français).
+  - [x] Après l'envoi, le ticket apparaît dans la liste avec le statut « Nouveau ».
+  - [x] Le ticket créé apparaît dans la colonne « Nouveau » du kanban.
 - API : API existante, `POST /api/tickets` (projet, résumé et description obligatoires, validés côté serveur).
 
 ## Hors périmètre

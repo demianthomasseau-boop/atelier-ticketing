@@ -64,6 +64,21 @@ $id = $r['body']['id'] ?? 0;
 verifie('création : statut « Nouveau »', ($r['body']['status'] ?? 0) === STATUS_NEW);
 verifie('création : historique NEW_BUG', ($r['body']['history'][0]['type'] ?? -1) == HISTORY_NEW_BUG);
 
+// Création : règles de validation du formulaire
+$r = api_handle('POST', '/api/tickets', [], ['project_id' => 1, 'summary' => '  ', 'description' => 'Texte']);
+verifie('création : résumé obligatoire (422)', $r['status'] === 422, $r);
+$r = api_handle('POST', '/api/tickets', [], ['project_id' => 99999, 'summary' => 'Test', 'description' => 'Texte']);
+verifie('création : projet inconnu (422)', $r['status'] === 422, $r);
+$r = api_handle('POST', '/api/tickets', [], ['project_id' => 1, 'summary' => str_repeat('a', 129), 'description' => 'Texte']);
+verifie('création : résumé trop long (422)', $r['status'] === 422, $r);
+$r = api_handle('POST', '/api/tickets', [], ['project_id' => 1, 'summary' => 'Test', 'description' => 'Texte', 'category_id' => 99999]);
+verifie('création : catégorie inconnue (422)', $r['status'] === 422, $r);
+$r2 = api_handle('POST', '/api/tickets', [], ['project_id' => 1, 'summary' => 'Sans priorité', 'description' => 'Texte']);
+verifie('création : priorité « Normale » par défaut', ($r2['body']['priority'] ?? 0) === 30, $r2);
+$r = api_handle('GET', '/api/tickets', ['status' => '10']);
+verifie('création : visible dans la liste « Nouveau »', in_array($r2['body']['id'] ?? 0, array_column($r['body'], 'id'), true));
+api_handle('DELETE', '/api/tickets/' . ($r2['body']['id'] ?? 0));
+
 // Affectation : passage automatique au statut « Affecté »
 $r = api_handle('PATCH', "/api/tickets/$id", [], ['handler_id' => 2]);
 verifie('affectation : statut « Affecté »', ($r['body']['status'] ?? 0) === STATUS_ASSIGNED, $r);
