@@ -60,43 +60,80 @@ const outils = {
 
 const ListeTickets = {
   props: ["params"],
-  setup() {
-    const tickets = ref([]);
-    const chargement = ref(true);
-    const erreur = ref('');
+  setup(props) {
+    const { tickets, chargement, erreur } = useTickets();
 
-    onMounted(async () => {
-      try {
-        tickets.value = await api('GET', '/api/tickets');
-      } catch (e) {
-        erreur.value = e.message;
-      } finally {
-        chargement.value = false;
+    // Écran « Tickets » complet, ou filtré sur une priorité (#/priorite/{id}, depuis le tableau de bord)
+    const priorite = computed(() => (props.params[0] ? Number(props.params[0]) : null));
+    const titre = computed(() => (priorite.value ? `Tickets – priorité ${outils.libelle('priority', priorite.value)}` : 'Tickets'));
+
+    // Tri : clic sur un en-tête = ascendant, second clic = descendant. Par défaut : dernière mise à jour décroissante.
+    const COLONNES = [
+      { cle: 'id', label: 'N°', valeur: (t) => t.id },
+      { cle: 'summary', label: 'Résumé', valeur: (t) => t.summary },
+      { cle: 'project', label: 'Projet', valeur: (t) => `${t.project} ${t.category ?? ''}` },
+      { cle: 'status', label: 'Statut', valeur: (t) => t.status },
+      { cle: 'priority', label: 'Priorité', valeur: (t) => t.priority },
+      { cle: 'handler', label: 'Responsable', valeur: (t) => t.handler ?? '' },
+      { cle: 'last_updated', label: 'Mis à jour', valeur: (t) => t.last_updated },
+    ];
+    const tri = reactive({ cle: 'last_updated', sens: -1 });
+
+    function trierPar(cle) {
+      if (tri.cle === cle) {
+        tri.sens = -tri.sens;
+      } else {
+        tri.cle = cle;
+        tri.sens = 1;
       }
+    }
+
+    const affiches = computed(() => {
+      const colonne = COLONNES.find((c) => c.cle === tri.cle);
+      const liste = tickets.value.filter((t) => priorite.value === null || t.priority === priorite.value);
+      return liste.sort((a, b) => {
+        const x = colonne.valeur(a);
+        const y = colonne.valeur(b);
+        const ordre = typeof x === 'number' ? x - y : String(x).localeCompare(String(y), 'fr', { sensitivity: 'base' });
+        return (ordre || a.id - b.id) * tri.sens;
+      });
     });
 
-    return { tickets, chargement, erreur, ...outils };
+    function ouvrir(id) {
+      location.hash = `#/ticket/${id}`;
+    }
+
+    return { tickets, chargement, erreur, priorite, titre, COLONNES, tri, trierPar, affiches, ouvrir, ...outils };
   },
   template: `
     <div class="d-flex align-items-center mb-3">
-      <h1 class="h4 mb-0">Tickets</h1>
-      <span class="badge text-bg-secondary ms-2">{{ tickets.length }}</span>
+      <h1 class="h4 mb-0">{{ titre }}</h1>
+      <span class="badge text-bg-secondary ms-2">{{ affiches.length }}</span>
+      <a v-if="priorite" href="#/tableau-de-bord" class="btn btn-sm btn-outline-secondary ms-auto">
+        <i class="bi bi-arrow-left me-1"></i>Retour au tableau de bord
+      </a>
     </div>
     <div v-if="erreur" class="alert alert-danger">{{ erreur }}</div>
     <div v-else-if="chargement" class="text-secondary">Chargement…</div>
+    <div v-else-if="!affiches.length" class="alert alert-info">Aucun ticket pour cette sélection.</div>
     <div v-else class="card shadow-sm">
       <div class="table-responsive">
         <table class="table table-hover table-tickets mb-0">
           <thead class="table-light">
             <tr>
-              <th>N°</th><th>Résumé</th><th>Projet</th><th>Statut</th>
-              <th>Priorité</th><th>Responsable</th><th>Mis à jour</th>
+              <th v-for="c in COLONNES" :key="c.cle" class="th-tri" role="button" tabindex="0"
+                  :aria-sort="tri.cle === c.cle ? (tri.sens === 1 ? 'ascending' : 'descending') : 'none'"
+                  @click="trierPar(c.cle)" @keydown.enter="trierPar(c.cle)">
+                {{ c.label }}
+                <i v-if="tri.cle === c.cle" class="bi ms-1" :class="tri.sens === 1 ? 'bi-caret-up-fill' : 'bi-caret-down-fill'"></i>
+                <i v-else class="bi bi-chevron-expand ms-1 text-secondary"></i>
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="t in tickets" :key="t.id">
+            <tr v-for="t in affiches" :key="t.id" @click="ouvrir(t.id)">
               <td class="text-secondary">#{{ t.id }}</td>
-              <td>{{ t.summary }}</td>
+              <td><a :href="'#/ticket/' + t.id" class="text-body text-decoration-none" @click.stop>{{ t.summary }}</a></td>
               <td class="small">{{ t.project }}<div class="text-secondary">{{ t.category }}</div></td>
               <td>
                 <span class="badge badge-statut" :style="{ background: couleurStatut(t.status) }">
@@ -155,24 +192,26 @@ const TableauDeBord = {
     <div v-else-if="chargement" class="text-secondary">Chargement…</div>
     <div v-else class="row g-3">
       <div class="col-md-3">
-        <div class="card shadow-sm h-100">
+        <a href="#/" class="card shadow-sm h-100 carte-lien text-decoration-none" title="Voir tous les tickets">
           <div class="card-body text-center">
             <div class="text-secondary small mb-1"><i class="bi bi-ticket-detailed me-1"></i>Tickets au total</div>
             <div class="compteur" data-test="total">{{ tickets.length }}</div>
           </div>
-        </div>
+        </a>
       </div>
       <div class="col-md-9">
         <div class="card shadow-sm h-100">
           <div class="card-header card-header-mer"><i class="bi bi-bar-chart-fill me-1"></i>Tickets par priorité</div>
           <div class="card-body">
-            <div v-for="p in parPriorite" :key="p.id" class="row align-items-center mb-2">
+            <component :is="p.nombre ? 'a' : 'div'" v-for="p in parPriorite" :key="p.id"
+                       :href="p.nombre ? '#/priorite/' + p.id : null" :title="p.nombre ? 'Voir les tickets de priorité ' + p.label : null"
+                       class="row align-items-center mb-2 text-body text-decoration-none" :class="{ 'ligne-lien': p.nombre }">
               <div class="col-3 col-md-2 small">{{ p.label }}</div>
               <div class="col">
                 <div class="barre-prio" :style="{ width: Math.max(p.nombre ? 4 : 0, p.nombre / maximum * 100) + '%' }">{{ p.nombre || '' }}</div>
                 <span v-if="!p.nombre" class="small text-secondary">0</span>
               </div>
-            </div>
+            </component>
           </div>
         </div>
       </div>
@@ -225,7 +264,13 @@ const FicheTicket = {
       }
     });
 
-    return { ticket, erreur, ...outils };
+    // Retour à l'écran d'origine (liste, kanban ou tableau de bord) ; la liste si la fiche a été ouverte directement
+    function retour() {
+      if (history.length > 1) history.back();
+      else location.hash = '#/';
+    }
+
+    return { ticket, erreur, retour, ...outils };
   },
   template: `
     <div v-if="erreur" class="alert alert-danger">{{ erreur }}</div>
@@ -246,7 +291,7 @@ const FicheTicket = {
         </div>
         <div class="text-secondary small">Description</div>
         <p class="mb-3" style="white-space: pre-wrap">{{ ticket.description }}</p>
-        <a class="btn btn-sm btn-outline-secondary" href="#/kanban"><i class="bi bi-arrow-left me-1"></i>Retour au kanban</a>
+        <a class="btn btn-sm btn-outline-secondary" href="#/" @click.prevent="retour"><i class="bi bi-arrow-left me-1"></i>Retour</a>
       </div>
     </div>
   `,
@@ -363,6 +408,7 @@ const PageIntrouvable = {
 const ROUTES = [
   { motif: /^#?\/?$/, vue: ListeTickets },
   { motif: /^#\/tableau-de-bord$/, vue: TableauDeBord },
+  { motif: /^#\/priorite\/(\d+)$/, vue: ListeTickets },
   { motif: /^#\/kanban$/, vue: Kanban },
   { motif: /^#\/ticket\/(\d+)$/, vue: FicheTicket },
 ];

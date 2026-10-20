@@ -13,6 +13,10 @@ L'outil est destiné à un directeur qui veut suivre l'activité des tickets d'u
   - [x] Après la création d'un ticket, les compteurs se mettent à jour.
 - API : API existante, `GET /api/tickets` (le comptage par priorité se fait côté interface) et `GET /api/meta` pour les libellés de priorité.
 
+- Amendement (itération 2) : tableau de bord cliquable
+  - [x] Un clic sur une priorité ouvre la liste des tickets de cette priorité (`#/priorite/{id}`), avec un lien de retour vers le tableau de bord.
+  - [x] Un clic sur le compteur « Tickets au total » ouvre la liste complète.
+
 ### F2 – Tableau kanban par statut
 - Besoin : le directeur voit les tickets rangés en colonnes selon leur statut.
 - Critères d'acceptation :
@@ -20,6 +24,10 @@ L'outil est destiné à un directeur qui veut suivre l'activité des tickets d'u
   - [x] Chaque carte affiche le numéro, le résumé et la priorité du ticket.
   - [x] Un clic sur une carte ouvre la fiche du ticket.
 - API : API existante, `GET /api/tickets` et `GET /api/meta` pour les statuts et leurs couleurs. Le déplacement par glisser-déposer n'est pas demandé : lecture seule.
+
+- Amendement (itération 2) : liste des tickets
+  - [x] Un clic sur un ticket de la liste ouvre sa fiche (`#/ticket/{id}`), et le bouton « Retour » revient à l'écran d'origine.
+  - [x] Un clic sur l'en-tête d'une colonne trie la liste en ordre croissant, un second clic en ordre décroissant (flèche sur la colonne triée, tri par défaut : dernière mise à jour).
 
 ### F3 – Création de ticket (formulaire)
 - Besoin : déclarer un nouvel incident depuis un formulaire.
@@ -48,6 +56,7 @@ Maquette : `public/maquette.html`.
 |---|---|---|---|---|
 | Tableau de bord | `#/tableau-de-bord` | nouveau | F1 | `GET /api/tickets`, `GET /api/meta` |
 | Kanban par statut | `#/kanban` | nouveau | F2 | `GET /api/tickets`, `GET /api/meta` |
-| Liste des tickets | `#/` | existant (repeint) | socle | `GET /api/tickets` |
+| Liste des tickets (triable) | `#/` | existant (repeint) | socle, F2 | `GET /api/tickets` |
+| Liste filtrée sur une priorité | `#/priorite/{id}` | nouveau | F1 | `GET /api/tickets` |
 | Nouveau ticket (fenêtre ouverte par l'icône « + » en haut à droite) | aucune adresse | nouveau | F3 | `POST /api/tickets`, `GET /api/meta` |
 | Fiche ticket (lecture seule) | `#/ticket/{id}` | nouveau | F2 | `GET /api/tickets/{id}` |
