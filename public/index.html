@@ -10,12 +10,12 @@
 </head>
 <body class="bg-body-tertiary">
   <div id="app" v-cloak>
-    <nav class="navbar navbar-expand bg-dark" data-bs-theme="dark">
+    <nav class="navbar navbar-expand navbar-mer" data-bs-theme="dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#/"><i class="bi bi-ticket-detailed me-2"></i>Ticketing</a>
+        <a class="navbar-brand" href="#/"><i class="bi bi-water me-2"></i>Ticketing</a>
         <ul class="navbar-nav me-auto">
           <li class="nav-item" v-for="lien in menu" :key="lien.href">
-            <a class="nav-link" :class="{ active: route.startsWith(lien.href) }" :href="lien.href">
+            <a class="nav-link" :class="{ active: lien.href === '#/' ? (route === '#/' || route === '#') : route.startsWith(lien.href) }" :href="lien.href">
               <i class="bi me-1" :class="lien.icone"></i>{{ lien.label }}
             </a>
           </li>

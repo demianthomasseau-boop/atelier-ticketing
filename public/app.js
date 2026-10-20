@@ -113,6 +113,72 @@ const ListeTickets = {
   `,
 };
 
+// Charge la liste des tickets (partagée par le tableau de bord et le kanban)
+function useTickets() {
+  const tickets = ref([]);
+  const chargement = ref(true);
+  const erreur = ref('');
+  onMounted(async () => {
+    try {
+      tickets.value = await api('GET', '/api/tickets');
+    } catch (e) {
+      erreur.value = e.message;
+    } finally {
+      chargement.value = false;
+    }
+  });
+  return { tickets, chargement, erreur };
+}
+
+const TableauDeBord = {
+  props: ["params"],
+  setup() {
+    const { tickets, chargement, erreur } = useTickets();
+
+    // Priorités de la plus haute à la plus basse ; « Aucune » n'apparaît que si des tickets l'utilisent
+    const parPriorite = computed(() => {
+      const liste = [...(etat.meta?.enums.priority ?? [])].reverse().map((p) => ({
+        id: p.id,
+        label: p.label,
+        nombre: tickets.value.filter((t) => t.priority === p.id).length,
+      }));
+      return liste.filter((p) => p.id !== 10 || p.nombre > 0);
+    });
+    const maximum = computed(() => Math.max(1, ...parPriorite.value.map((p) => p.nombre)));
+
+    return { tickets, chargement, erreur, parPriorite, maximum };
+  },
+  template: `
+    <h1 class="h4 mb-3">Tableau de bord</h1>
+    <div v-if="erreur" class="alert alert-danger">{{ erreur }}</div>
+    <div v-else-if="chargement" class="text-secondary">Chargement…</div>
+    <div v-else class="row g-3">
+      <div class="col-md-3">
+        <div class="card shadow-sm h-100">
+          <div class="card-body text-center">
+            <div class="text-secondary small mb-1"><i class="bi bi-ticket-detailed me-1"></i>Tickets au total</div>
+            <div class="compteur" data-test="total">{{ tickets.length }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="card shadow-sm h-100">
+          <div class="card-header card-header-mer"><i class="bi bi-bar-chart-fill me-1"></i>Tickets par priorité</div>
+          <div class="card-body">
+            <div v-for="p in parPriorite" :key="p.id" class="row align-items-center mb-2">
+              <div class="col-3 col-md-2 small">{{ p.label }}</div>
+              <div class="col">
+                <div class="barre-prio" :style="{ width: Math.max(p.nombre ? 4 : 0, p.nombre / maximum * 100) + '%' }">{{ p.nombre || '' }}</div>
+                <span v-if="!p.nombre" class="small text-secondary">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
+};
+
 const PageIntrouvable = {
   props: ["params"],
   template: `
@@ -130,10 +196,12 @@ const PageIntrouvable = {
 // Chaque route : un motif sur l'ancre et un composant. Les groupes capturés arrivent dans params.
 const ROUTES = [
   { motif: /^#?\/?$/, vue: ListeTickets },
+  { motif: /^#\/tableau-de-bord$/, vue: TableauDeBord },
 ];
 
 // Liens de la barre de navigation
 const MENU = [
+  { href: '#/tableau-de-bord', label: 'Tableau de bord', icone: 'bi-speedometer2' },
   { href: '#/', label: 'Tickets', icone: 'bi-list-ul' },
 ];
 
