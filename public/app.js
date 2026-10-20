@@ -31,7 +31,8 @@ async function api(methode, chemin, corps) {
 
 // Métadonnées chargées une fois : listes de valeurs MantisBT, projets, catégories, utilisateurs
 // creationOuverte : fenêtre « Nouveau ticket » ; version : incrémentée après une création pour recharger l'écran affiché
-const etat = reactive({ meta: null, creationOuverte: false, version: 0 });
+// precedent : écran affiché avant l'écran courant, pour le bouton « Retour » de la fiche
+const etat = reactive({ meta: null, creationOuverte: false, version: 0, precedent: '' });
 
 const outils = {
   libelle(liste, id) {
@@ -121,7 +122,7 @@ const ListeTickets = {
         <table class="table table-hover table-tickets mb-0">
           <thead class="table-light">
             <tr>
-              <th v-for="c in COLONNES" :key="c.cle" class="th-tri" role="button" tabindex="0"
+              <th v-for="c in COLONNES" :key="c.cle" class="th-tri" tabindex="0"
                   :aria-sort="tri.cle === c.cle ? (tri.sens === 1 ? 'ascending' : 'descending') : 'none'"
                   @click="trierPar(c.cle)" @keydown.enter="trierPar(c.cle)">
                 {{ c.label }}
@@ -264,10 +265,9 @@ const FicheTicket = {
       }
     });
 
-    // Retour à l'écran d'origine (liste, kanban ou tableau de bord) ; la liste si la fiche a été ouverte directement
+    // Retour à l'écran d'origine dans l'application (liste, kanban, tableau de bord) ; la liste si la fiche a été ouverte directement
     function retour() {
-      if (history.length > 1) history.back();
-      else location.hash = '#/';
+      location.hash = etat.precedent && !etat.precedent.startsWith('#/ticket/') ? etat.precedent : '#/';
     }
 
     return { ticket, erreur, retour, ...outils };
@@ -306,8 +306,12 @@ const FormulaireCreation = {
 
     const categories = computed(() => (etat.meta?.categories ?? []).filter((c) => c.project_id === Number(champs.project_id)));
 
+    // Le focus entre dans la fenêtre à l'ouverture (la touche Échap la ferme) et revient sur le « + » à la fermeture
+    onMounted(() => document.getElementById('champ-projet')?.focus());
+
     function fermer() {
       etat.creationOuverte = false;
+      document.querySelector('.btn-nouveau')?.focus();
     }
 
     async function envoyer() {
@@ -361,7 +365,7 @@ const FormulaireCreation = {
             </div>
             <div class="mb-3">
               <label class="form-label" for="champ-description">Description <span class="text-danger">*</span></label>
-              <textarea id="champ-description" class="form-control" rows="4" v-model="champs.description"></textarea>
+              <textarea id="champ-description" class="form-control" rows="4" maxlength="5000" v-model="champs.description"></textarea>
             </div>
             <div class="row">
               <div class="col-md-6 mb-3">
@@ -424,7 +428,10 @@ createApp({
   setup() {
     const route = ref(location.hash || '#/');
     const erreur = ref('');
-    window.addEventListener('hashchange', () => { route.value = location.hash || '#/'; });
+    window.addEventListener('hashchange', () => {
+      etat.precedent = route.value;
+      route.value = location.hash || '#/';
+    });
 
     onMounted(async () => {
       try {
