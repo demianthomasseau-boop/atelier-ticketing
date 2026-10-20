@@ -179,6 +179,78 @@ const TableauDeBord = {
   `,
 };
 
+const Kanban = {
+  props: ["params"],
+  setup() {
+    const { tickets, chargement, erreur } = useTickets();
+
+    const colonnes = computed(() => (etat.meta?.enums.status ?? []).map((s) => ({
+      ...s,
+      tickets: tickets.value.filter((t) => t.status === s.id),
+    })));
+
+    return { tickets, chargement, erreur, colonnes, ...outils };
+  },
+  template: `
+    <div class="d-flex align-items-center mb-3">
+      <h1 class="h4 mb-0">Kanban</h1>
+      <span class="badge text-bg-secondary ms-2">{{ tickets.length }}</span>
+    </div>
+    <div v-if="erreur" class="alert alert-danger">{{ erreur }}</div>
+    <div v-else-if="chargement" class="text-secondary">Chargement…</div>
+    <div v-else class="kanban">
+      <div v-for="c in colonnes" :key="c.id" class="kanban-col">
+        <h2 :style="{ borderColor: c.color }">{{ c.label }} <span class="badge text-bg-secondary">{{ c.tickets.length }}</span></h2>
+        <a v-for="t in c.tickets" :key="t.id" :href="'#/ticket/' + t.id" class="kanban-carte d-block text-decoration-none text-body">
+          <strong>#{{ t.id }}</strong> {{ t.summary }}
+          <div class="small mt-1" :class="'priorite-' + t.priority">{{ libelle('priority', t.priority) }}</div>
+        </a>
+      </div>
+    </div>
+  `,
+};
+
+const FicheTicket = {
+  props: ["params"],
+  setup(props) {
+    const ticket = ref(null);
+    const erreur = ref('');
+
+    onMounted(async () => {
+      try {
+        ticket.value = await api('GET', `/api/tickets/${props.params[0]}`);
+      } catch (e) {
+        erreur.value = e.message;
+      }
+    });
+
+    return { ticket, erreur, ...outils };
+  },
+  template: `
+    <div v-if="erreur" class="alert alert-danger">{{ erreur }}</div>
+    <div v-else-if="!ticket" class="text-secondary">Chargement…</div>
+    <div v-else class="card shadow-sm">
+      <div class="card-header card-header-mer d-flex align-items-center">
+        <span>#{{ ticket.id }} · {{ ticket.summary }}</span>
+        <span class="badge badge-statut ms-auto" :style="{ background: couleurStatut(ticket.status) }">
+          {{ libelle('status', ticket.status) }}
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3 small">
+          <div class="col-md-3"><div class="text-secondary">Projet</div>{{ ticket.project }}</div>
+          <div class="col-md-3"><div class="text-secondary">Priorité</div><span :class="'priorite-' + ticket.priority">{{ libelle('priority', ticket.priority) }}</span></div>
+          <div class="col-md-3"><div class="text-secondary">Responsable</div>{{ ticket.handler || '—' }}</div>
+          <div class="col-md-3"><div class="text-secondary">Mis à jour</div>{{ depuis(ticket.last_updated) }}</div>
+        </div>
+        <div class="text-secondary small">Description</div>
+        <p class="mb-3" style="white-space: pre-wrap">{{ ticket.description }}</p>
+        <a class="btn btn-sm btn-outline-secondary" href="#/kanban"><i class="bi bi-arrow-left me-1"></i>Retour au kanban</a>
+      </div>
+    </div>
+  `,
+};
+
 const PageIntrouvable = {
   props: ["params"],
   template: `
@@ -197,11 +269,14 @@ const PageIntrouvable = {
 const ROUTES = [
   { motif: /^#?\/?$/, vue: ListeTickets },
   { motif: /^#\/tableau-de-bord$/, vue: TableauDeBord },
+  { motif: /^#\/kanban$/, vue: Kanban },
+  { motif: /^#\/ticket\/(\d+)$/, vue: FicheTicket },
 ];
 
 // Liens de la barre de navigation
 const MENU = [
   { href: '#/tableau-de-bord', label: 'Tableau de bord', icone: 'bi-speedometer2' },
+  { href: '#/kanban', label: 'Kanban', icone: 'bi-kanban' },
   { href: '#/', label: 'Tickets', icone: 'bi-list-ul' },
 ];
 

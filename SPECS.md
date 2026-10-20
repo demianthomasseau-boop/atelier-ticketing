@@ -16,9 +16,9 @@ L'outil est destiné à un directeur qui veut suivre l'activité des tickets d'u
 ### F2 – Tableau kanban par statut
 - Besoin : le directeur voit les tickets rangés en colonnes selon leur statut.
 - Critères d'acceptation :
-  - [ ] Une colonne par statut MantisBT (Nouveau, Commentaire, Accepté, Confirmé, Affecté, Résolu, Fermé), avec le nombre de tickets.
-  - [ ] Chaque carte affiche le numéro, le résumé et la priorité du ticket.
-  - [ ] Un clic sur une carte ouvre la fiche du ticket.
+  - [x] Une colonne par statut MantisBT (Nouveau, Commentaire, Accepté, Confirmé, Affecté, Résolu, Fermé), avec le nombre de tickets.
+  - [x] Chaque carte affiche le numéro, le résumé et la priorité du ticket.
+  - [x] Un clic sur une carte ouvre la fiche du ticket.
 - API : API existante, `GET /api/tickets` et `GET /api/meta` pour les statuts et leurs couleurs. Le déplacement par glisser-déposer n'est pas demandé : lecture seule.
 
 ### F3 – Création de ticket (formulaire)
